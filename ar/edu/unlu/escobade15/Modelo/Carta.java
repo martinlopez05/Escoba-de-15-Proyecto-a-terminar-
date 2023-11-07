@@ -1,10 +1,10 @@
-package ar.edu.unlu.escobade15;
+package Modelo;
 
 public class Carta {
     private int numero;
-    private String palo;
+    private Palo palo;
 
-    public Carta(int numero, String palo) {
+    public Carta(int numero, Palo palo) {
         this.numero = numero;
         this.palo = palo;
 
@@ -14,12 +14,14 @@ public class Carta {
         return numero;
     }
 
-    public String getPalo() {
+    public Palo getPalo() {
         return palo;
     }
 
     public String toString() {
         return "[numero: " + getNumero() + ",palo: " + getPalo() + "]";
     }
+
+   
 
 }
