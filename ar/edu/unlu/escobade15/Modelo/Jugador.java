@@ -29,6 +29,8 @@ public class Jugador {
         CartasMano.remove(carta);
         
     }
+
+    
 }
 
 

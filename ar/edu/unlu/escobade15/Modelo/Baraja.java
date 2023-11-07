@@ -9,6 +9,7 @@ public class Baraja {
     public Baraja() {
         this.Cartas = new Stack<Carta>();
         crearCartas();
+        mezclarCartas();
 
     }
 
@@ -28,9 +29,12 @@ public class Baraja {
         Cartas.push(carta);
 
     }
-
-    public Carta sacarCarta() {
-        return Cartas.pop();
+    
+    public void darCarta(Jugador jugador) {
+        for (int i=0;i<3;i++) {
+            jugador.recibirCarta(Cartas.pop());
+            
+        }
     }
 
     public void mezclarCartas() {
@@ -48,12 +52,6 @@ public class Baraja {
 
     }
 
-    public void Repartir(Jugador jugador){
-        for (int i=0;i<3;i++) {
-            jugador.recibirCarta(sacarCarta());
-            
-        }
-
-    }
+    
 
 }
