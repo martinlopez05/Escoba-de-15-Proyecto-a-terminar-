@@ -8,7 +8,7 @@ public class Jugador {
     private String nombreJugador;
     private List<Carta> CartasMano;
 
-    MasoJugador MasoRonda;
+    private MasoJugador MasoRonda;
 
     public Jugador(String nombreJugador) {
         this.nombreJugador = nombreJugador;
@@ -32,6 +32,12 @@ public class Jugador {
         CartasMano.remove(carta);
         
     }
+
+    public void agregarCartaalMasoRonda(Carta carta){
+        MasoRonda.agregarCarta(carta);
+
+    }
+
 
 
     public void mostrarCartasdeJugador(){

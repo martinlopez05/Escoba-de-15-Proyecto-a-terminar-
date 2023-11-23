@@ -8,7 +8,7 @@ public class MasoJugador {
         Cartas = new ArrayList<>();
 
     }
-    List<Carta> Cartas;
+    private List<Carta> Cartas;
 
     public void agregarCarta(Carta carta){
         Cartas.add(carta);

@@ -42,4 +42,14 @@ public class Mesa {
         }
 
     }
+
+
+    public boolean sepuedeEscobadeMano(){
+        int suma = 0;
+        for (Carta cartaMesa : CartasMesa) {
+            suma += cartaMesa.getValor();
+        }
+        return suma == 15;
+    }
+
 }

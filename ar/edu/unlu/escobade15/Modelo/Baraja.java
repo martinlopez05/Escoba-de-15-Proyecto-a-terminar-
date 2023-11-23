@@ -44,12 +44,7 @@ public class Baraja {
 
     }
     
-    public void darCarta(Jugador jugador) {
-        for (int i=0;i<3;i++) {
-            jugador.recibirCarta(Cartas.pop());
-            
-        }
-    }
+
 
     public void mezclarCartas() {
         Collections.shuffle(Cartas);

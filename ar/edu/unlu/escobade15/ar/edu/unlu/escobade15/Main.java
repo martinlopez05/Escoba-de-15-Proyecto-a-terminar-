@@ -1,13 +1,8 @@
 package ar.edu.unlu.escobade15;
 
 
-import Controlador.ControladorAltajugador;
-import Modelo.Baraja;
-import Modelo.Carta;
 import Modelo.Juego;
 import Modelo.Jugador;
-import Modelo.ModeloJugadores;
-import Vista.VistaAltajugador;
 
 public class Main {
     public static void main(String[] args) {
@@ -33,7 +28,7 @@ public class Main {
         juego.baraja.mostrarBaraja();
 
 
-        juego.RepartirCartas();
+        juego.repartirCartas();
 
         juego.jugadorActual.mostrarCartasdeJugador();
 
