@@ -7,7 +7,6 @@ import Modelo.Carta;
 import Modelo.Juego;
 import Modelo.Jugador;
 import Modelo.ModeloJugadores;
-import Modelo.Palo;
 import Vista.VistaAltajugador;
 
 public class Main {
@@ -15,7 +14,7 @@ public class Main {
         
         
 
-        Baraja baraja = new Baraja();
+
         Juego juego = new Juego();
 
         Jugador jugador1 = new Jugador("martin");
@@ -24,42 +23,33 @@ public class Main {
         Jugador  jugador4 = new Jugador("pablo");
 
 
-        juego.AgregarJugador(jugador1);
-        juego.AgregarJugador(jugador2);
-        juego.AgregarJugador(jugador4);
-        juego.AgregarJugador(jugador3);
+        juego.agregarJugador("Martin");
+        juego.agregarJugador("juan");
+        juego.agregarJugador("nancy");
+        juego.agregarJugador("fevola");
+
+
+        System.out.println("baraja iniciada");
+        juego.baraja.mostrarBaraja();
 
 
         juego.RepartirCartas();
 
-        System.out.println("CARTAS DEL JUGADOR UNO");
-        for (Carta carta : jugador1.getCartasEnMano()) {
-            System.out.println(carta.toString());
-            
-        }
+        juego.jugadorActual.mostrarCartasdeJugador();
+
+
+
+
+
+        juego.mesajuego.mostrarCartasenMesa();
+
+        juego.baraja.mostrarBaraja();
 
 
 
 
 
 
-
-
-
-       
-
-        baraja.mostrarBaraja(); 
-
-
-
-
-        ModeloJugadores modeloJugadores = new ModeloJugadores();
-        VistaAltajugador vistaAltaJugador= new VistaAltajugador();
-        ControladorAltajugador cntAltaJugador = new ControladorAltajugador(modeloJugadores, vistaAltaJugador);
-        cntAltaJugador.IniciarAlta();
-        cntAltaJugador.IniciarAlta();
-        cntAltaJugador.IniciarAlta();
-        cntAltaJugador.IniciarAlta();
 
 
         

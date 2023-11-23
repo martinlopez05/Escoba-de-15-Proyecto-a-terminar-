@@ -10,7 +10,7 @@ public class ModeloJugadores {
 
     }
 
-    public void AgregarJugador(Jugador jugador) {
+    public void agregarJugador(Jugador jugador) {
         if (Jugadores.size() < 4) {
             Jugadores.add(jugador);
             System.out.println("Jugador " + jugador.getNombreJugador() + " agregado exitosamente.");

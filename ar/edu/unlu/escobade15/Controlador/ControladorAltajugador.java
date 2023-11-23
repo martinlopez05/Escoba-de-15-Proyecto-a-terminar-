@@ -1,23 +1,29 @@
 package Controlador;
 
+import Modelo.Juego;
 import Modelo.Jugador;
-import Modelo.ModeloJugadores;
 import Vista.VistaAltajugador;
 
 public class ControladorAltajugador {
-    ModeloJugadores modelo;
+    Juego modelo;
     VistaAltajugador vista;
 
-    public ControladorAltajugador(ModeloJugadores modelo, VistaAltajugador vista){
+    public ControladorAltajugador(Juego modelo, VistaAltajugador vista){
         this.modelo=modelo;
         this.vista=vista;
     }
 
-    public void IniciarAlta(){
+    /*public void IniciarAlta(){
         Jugador jugador = vista.SolcitarDatosJugador();
-        modelo.AgregarJugador(jugador);
-    }
+        modelo.agregarJugador(jugador);
+    }*/
     
+    public void agregarJugador(String nombre){
+        modelo.agregarJugador(nombre);
+    }
 
+    public void nofiticar(Object o){
+
+    }
     
 }

@@ -17,16 +17,30 @@ public class Baraja {
         // Crear todas las cartas de la baraja
         for (int numero = 1; numero <= 12; numero++) {
             for (Palo palo : Palo.values()) {
-                Carta carta = new Carta(numero, palo);
-                Cartas.push(carta);
+                if (numero != 8 && numero != 9) {
+                    if (numero == 10) {
+                        Carta carta = new Carta(numero, palo, 8);
+                        Cartas.push(carta);
+                    } else if (numero == 11) {
+                        Carta carta = new Carta(numero, palo, 9);
+                        Cartas.push(carta);
+                    } else if (numero == 12) {
+                        Carta carta = new Carta(numero, palo, 10);
+                        Cartas.push(carta);
+                    } else {
+                        Carta carta = new Carta(numero, palo, numero);
+                        Cartas.push(carta);
+                    }
+                }
             }
         }
     }
 
 
 
-    public void agregarCartas(Carta carta) {
-        Cartas.push(carta);
+
+    public  Carta sacarCarta() {
+        return Cartas.pop();
 
     }
     
@@ -51,6 +65,12 @@ public class Baraja {
         }
 
     }
+
+    /*public void elegirCartaaBajar(){
+        for(Carta carta : Cartas){
+            if(numero.)
+        }
+    }*/
 
     
 

@@ -1,17 +1,26 @@
 package Modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Mesa {
 
-    private List<Carta> CartaMesa;
-
-    public void DejarCarta(Carta carta) {
-        CartaMesa.add(carta);
+    public Mesa (){
+        this.CartasMesa = new ArrayList<>();
     }
 
-    public boolean HayCartasenMesa() {
-        if(CartaMesa.size()==0){
+    private List<Carta> CartasMesa;
+
+    public void dejarCarta(Carta carta) {
+        CartasMesa.add(carta);
+    }
+
+    public void agarrarCarta(Carta carta){
+        CartasMesa.remove(carta);
+    }
+
+    public boolean hayCartasenMesa() {
+        if(CartasMesa.size()==0){
             return false;
         }
         else{
@@ -20,4 +29,17 @@ public class Mesa {
 
     }
 
+    public List<Carta> getCartasMesa() {
+        return CartasMesa;
+    }
+
+
+    public void mostrarCartasenMesa() {
+        System.out.println("\nCarta en la mesa\n");
+        for(Carta carta : CartasMesa){
+            System.out.println("" + carta.toString());
+
+        }
+
+    }
 }
