@@ -1,4 +1,6 @@
-package Modelo;
+package util.PatronObserver;
+
+import Modelo.Evento;
 
 public interface Observable {
     public void agregarObservador(Observer observador);

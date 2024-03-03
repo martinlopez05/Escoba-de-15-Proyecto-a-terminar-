@@ -8,7 +8,11 @@ public enum Evento {
 
     CAMBIO_DE_TURNO,
 
-    INICIO_PARTIDA,
+    REPARTIR_CARTAS,
+
+    HAY_ESCOBA,
+
+    HAY_ESCOBA_DE_MANO,
 
 
 

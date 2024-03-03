@@ -1,59 +1,128 @@
 package Controlador;
 
 import Modelo.Carta;
+import Modelo.Evento;
 import Modelo.Juego;
-import Modelo.Jugador;
-import Modelo.Observer;
-import Vista.VistaAltajugador;
-
-import java.util.Scanner;
+import util.PatronObserver.Observer;
+import Vista.VistaConsola;
 
 public class ControladorJuego implements Observer {
     Juego modelo;
-    VistaAltajugador vista;
+    VistaConsola vista;
 
-    public ControladorJuego(Juego modelo, VistaAltajugador vista){
+    public ControladorJuego(Juego modelo,VistaConsola vista){
         this.modelo=modelo;
-        this.vista=vista;
+        this.vista = vista;
+        vista.setControlador(this);
+        modelo.agregarObservador(this);
     }
 
-    public void jugarTurno() {
-        if (!modelo.hayCartasenlaMesa()) {
-            vista.Mostrarmensaje("No hay cartas en la mesa, elija una para dejar:");
-            Carta cartaelegida = modelo.jugadorActual.elegirCartaaBajar();
-            modelo.dejarCartaenMesa(cartaelegida);
-            modelo.jugadorActual.sacarCarta(cartaelegida);
-        } else if (modelo.sepuedeEscobadeMano()) {
-            vista.Mostrarmensaje("¡Hay escoba de mano, felicitaciones!");
-            modelo.hacerEscobadeMano();
-        } else {
-            Carta cartaelegida = modelo.jugadorActual.elegirCartaaBajar();
-            if (modelo.sepuedeEscoba(cartaelegida, modelo.mesajuego.getCartasMesa())) {
-                vista.Mostrarmensaje("Se puede hacer escoba");
-                Scanner sc = new Scanner(System.in);
-                vista.Mostrarmensaje("¿Quieres hacer escoba? (Sí/No):");
-                String respuesta = sc.next().toLowerCase();
-                if ("si".equals(respuesta)) {
-                    modelo.hacerEscoba(cartaelegida, modelo.mesajuego.getCartasMesa());
-                } else {
-                    modelo.dejarCartaenMesa(cartaelegida);
-                    modelo.jugadorActual.sacarCarta(cartaelegida);
-                }
-            }
+
+
+    public void iniciarjuego() {
+
+        if (modelo.obtenercantJugadores() < 2) {
+            vista.mostrarmensaje("¡No se puede iniciar el juego por falta de jugadores!");
+            return;
         }
 
-        modelo.actualizaTurno();
+        modelo.repartirMano();
+
+        jugarPartida();
     }
 
 
-    public void agregarJugador(String nombre){
+
+
+    public void jugarPartida() {
+
+        while (!modelo.getBaraja().esVacia()) {
+            if(modelo.jugadoresTienenCartas()) {
+
+
+                vista.mostrarTurno(modelo.getJugadorActual());
+                vista.mostrarMesa(modelo.getMesajuego().getCartasMesa());
+                vista.mostrarCartajugador(modelo.getJugadorActual());
+                int opcion= vista.elegirOpcionJugador();
+
+
+                switch (opcion) {
+                    case 1:
+                        Carta carta = vista.solicitarCartaaBajar(modelo.cartasdeJugadorActual());
+                        modelo.jugadorBajaCarta(carta);
+                        break;
+                    case 2:
+                        break;
+
+
+                    default:
+                        System.out.println("Opción no válida.");
+                        break;
+                }
+
+            }
+            else{
+                modelo.repartirMano();
+            }
+            modelo.actualizaTurno();
+
+        }
+
+
+        seTermino();
+    }
+
+
+
+
+    public void agregarJugador(){
+        String nombre = vista.solicitarNombreJugador();
         modelo.agregarJugador(nombre);
+
     }
+
+
+
+    public void seTermino(){
+        vista.mostrarPuntosjugador(modelo.getJugadores());
+        modelo.sumarPuntoalFinal();
+        vista.mostrarGanador(modelo.obtenerGanador());
+    }
+
+
 
 
 
     @Override
-    public void update() {
+    public void update(Object dato) {
+        if(dato == Evento.JUGADOR_AGREGADO){
+            vista.mostrarmensaje("Jugador agregado correctamente");
+
+        }
+        if(dato == Evento.FIN_PARTIDA){
+            vista.mostrarmensaje("Fin de la partida...");
+            vista.mostrarmensaje("***Recuento de puntos***");
+
+
+        }
+        if(dato== Evento.CAMBIO_DE_TURNO){
+            vista.mostrarmensaje("\nCambiando de turno...");
+        }
+
+        if(dato==Evento.REPARTIR_CARTAS){
+            vista.mostrarmensaje("Repartiendo cartas...");
+        }
+
+        if(dato==Evento.HAY_ESCOBA){
+            vista.mostrarmensaje("¡Puede hacer escoba!");
+        }
+
+
+
 
     }
+
+
+
+
 }

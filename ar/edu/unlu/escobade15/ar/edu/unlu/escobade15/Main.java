@@ -1,55 +1,18 @@
 package ar.edu.unlu.escobade15;
 
 
+import Controlador.ControladorJuego;
 import Modelo.Juego;
-import Modelo.Jugador;
+import Vista.VistaConsola;
+import Vista.VistaConsola;
 
 public class Main {
     public static void main(String[] args) {
-        
-        
-
 
         Juego juego = new Juego();
-
-        Jugador jugador1 = new Jugador("martin");
-        Jugador jugador2  = new Jugador("juan");
-        Jugador jugador3 = new Jugador("MATIAS");
-        Jugador  jugador4 = new Jugador("pablo");
-
-
-        juego.agregarJugador("Martin");
-        juego.agregarJugador("juan");
-        juego.agregarJugador("nancy");
-        juego.agregarJugador("fevola");
-
-
-        System.out.println("baraja iniciada");
-        juego.baraja.mostrarBaraja();
-
-
-        juego.repartirCartas();
-
-        juego.jugadorActual.mostrarCartasdeJugador();
-
-
-
-
-
-        juego.mesajuego.mostrarCartasenMesa();
-
-        juego.baraja.mostrarBaraja();
-
-
-
-
-
-
-
-
-        
-
+        VistaConsola vista = new VistaConsola();
+        ControladorJuego controlador = new ControladorJuego(juego,vista);
+        vista.iniciar();
 
     }
-
 }

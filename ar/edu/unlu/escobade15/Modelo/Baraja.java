@@ -14,7 +14,6 @@ public class Baraja {
     }
 
     private void crearCartas() {
-        // Crear todas las cartas de la baraja
         for (int numero = 1; numero <= 12; numero++) {
             for (Palo palo : Palo.values()) {
                 if (numero != 8 && numero != 9) {
@@ -51,21 +50,12 @@ public class Baraja {
 
     }
 
-    public void mostrarBaraja() {
-        int i = 1;
-        for (Carta carta : Cartas) {
-            System.out.println("Carta: " + i + carta.toString());
-            i++;
 
-        }
 
+    public boolean esVacia(){
+        return Cartas.isEmpty();
     }
 
-    /*public void elegirCartaaBajar(){
-        for(Carta carta : Cartas){
-            if(numero.)
-        }
-    }*/
 
     
 
