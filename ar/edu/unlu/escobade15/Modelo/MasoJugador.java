@@ -8,6 +8,7 @@ public class MasoJugador {
         Cartas = new ArrayList<>();
 
     }
+
     private List<Carta> Cartas;
 
 
