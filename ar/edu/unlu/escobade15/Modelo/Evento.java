@@ -1,7 +1,9 @@
 package Modelo;
 
 public enum Evento {
+
     JUGADOR_AGREGADO,
+    
     TURNO_JUGADOR,
 
     FIN_PARTIDA,
