@@ -5,6 +5,7 @@ import util.PatronObserver.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Juego implements Observable {
 
@@ -22,12 +23,7 @@ public class Juego implements Observable {
         jugadores = new ArrayList<>();
         this.mesajuego = new Mesa();
         this.listaObservadores = new ArrayList<>();
-
-
     }
-
-
-
 
 
 
@@ -63,18 +59,27 @@ public class Juego implements Observable {
 
                 }
             }
+
             if (mesajuego.MesaVacia()) {
                 for (int i = 0; i < 4; i++) {
-                    mesajuego.dejarCarta(baraja.sacarCarta());
+                    mesajuego.agregarCarta(baraja.sacarCarta());
                 }
             }
             notificar(Evento.REPARTIR_CARTAS);
         }
-        else{
-            System.out.println("\nNo hay mas cartas en la baraja...");
+    }
+
+
+
+    public boolean sePuedeIniciarpartida(){
+        if(jugadores.size() >= 2){
+            return true;
         }
+        else{
+            notificar(Evento.FALTA_JUGADORES);
+            return false;
 
-
+        }
     }
 
 
@@ -108,13 +113,24 @@ public class Juego implements Observable {
 
     public void jugadorBajaCarta(Carta carta) {
         if (!jugadorActual.getCartasEnMano().isEmpty()) {
-            mesajuego.dejarCarta(carta);
+            mesajuego.agregarCarta(carta);
             jugadorActual.sacarCarta(carta);
         } else {
-            System.out.println("El jugador no tiene más cartas en la mano.");
+            notificar(Evento.JUGADOR_SIN_CARTAS);
         }
     }
 
+
+
+    public void jugadorAgarraCarta(Carta carta){
+        if(hayCartasenlaMesa()){
+            jugadorActual.recibirCarta(carta);
+            mesajuego.sacarCarta(carta);
+        }
+        else{
+            notificar(Evento.NO_HAY_EN_MESA);
+        }
+    }
 
 
 
@@ -128,73 +144,15 @@ public class Juego implements Observable {
     }
 
 
-    public boolean sepuedeEscobadeMano(){
-        int suma = 0;
-        for (Carta carta : mesajuego.getCartasMesa()){
-            suma += carta.getValor();
-        }
-        return suma == 15;
-    }
-
-
-    public boolean suma15ConMesa(Carta cartaJugador) {
-        int suma = cartaJugador.getValor();
-        for (Carta cartaMesa : mesajuego.getCartasMesa()) {
-            suma += cartaMesa.getValor();
-        }
-        notificar(Evento.HAY_ESCOBA);
-        return suma == 15;
-    }
-
-    public void jugadorHaceEscoba(Carta cartaJugador) {
-        if (suma15ConMesa(cartaJugador)) {
-            hacerEscoba(cartaJugador, mesajuego.getCartasMesa());
-        }
-
-    }
 
 
 
 
-    public void hacerEscobadeMano(){
-        for(Carta cartaMesa: mesajuego.getCartasMesa()){
-            mesajuego.agarrarCarta(cartaMesa);
-            jugadorActual.agregarCartaalMasoRonda(cartaMesa);
-        }
-        jugadorActual.sumarpunto(1);
-
-    }
-
-
-
-    public void hacerEscoba(Carta cartaJugador, List<Carta> cartasMesa){
-        jugadorActual.agregarCartaalMasoRonda(cartaJugador);
-        jugadorActual.sacarCarta(cartaJugador);
-        for(Carta carta : cartasMesa) {
-            jugadorActual.agregarCartaalMasoRonda(carta);
-            mesajuego.agarrarCarta(carta);
-
-        }
-        jugadorActual.sumarpunto(1);
-
-    }
-
-
-
-
-    public void agregarJugador(String nombreJugador) {
-        Jugador jugador = new Jugador(nombreJugador);
-
-
-        if (jugadores.size() < 4) {
-            jugadores.add(jugador);
-            jugadorActual = jugadores.get(0);
-            this.notificar(Evento.JUGADOR_AGREGADO);
-        }
-        if (jugadores.size() == 4) {
-                System.out.println("¡Ya se alcanzó la capacidad máxima de jugadores!");
-        }
-
+    public void agregarJugador(String nombre) {
+        Jugador jugador = new Jugador(nombre);
+        jugadores.add(jugador);
+        jugadorActual = jugadores.get(0);
+        this.notificar(Evento.JUGADOR_AGREGADO);
     }
 
 
@@ -276,6 +234,62 @@ public class Juego implements Observable {
         listaObservadores.remove(observador);
 
     }
+
+
+
+
+    /*
+
+    public boolean sepuedeEscobadeMano(){
+        int suma = 0;
+        for (Carta carta : mesajuego.getCartasMesa()){
+            suma += carta.getValor();
+        }
+        return suma == 15;
+    }
+
+
+    public boolean suma15ConMesa(Carta cartaJugador) {
+        int suma = cartaJugador.getValor();
+        for (Carta cartaMesa : mesajuego.getCartasMesa()) {
+            suma += cartaMesa.getValor();
+        }
+        notificar(Evento.HAY_ESCOBA);
+        return suma == 15;
+    }
+
+    public void jugadorHaceEscoba(Carta cartaJugador) {
+        if (suma15ConMesa(cartaJugador)) {
+            hacerEscoba(cartaJugador, mesajuego.getCartasMesa());
+        }
+
+    }
+
+
+
+
+    public void hacerEscobadeMano(){
+        for(Carta cartaMesa: mesajuego.getCartasMesa()){
+            mesajuego.agregarCarta(cartaMesa);
+            jugadorActual.agregarCartaalMasoRonda(cartaMesa);
+        }
+        jugadorActual.sumarpunto(1);
+
+    }
+
+
+
+    public void hacerEscoba(Carta cartaJugador, List<Carta> cartasMesa){
+        jugadorActual.agregarCartaalMasoRonda(cartaJugador);
+        jugadorActual.sacarCarta(cartaJugador);
+        for(Carta carta : cartasMesa) {
+            jugadorActual.agregarCartaalMasoRonda(carta);
+            mesajuego.agregarCarta(carta);
+
+        }
+        jugadorActual.sumarpunto(1);
+
+    } */
 
 
 }

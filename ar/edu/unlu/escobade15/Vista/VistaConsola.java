@@ -58,12 +58,11 @@ public class VistaConsola implements Ivista{
             } else {
                 switch (opcion) {
                     case 1: {
-
-                        controlador.agregarJugador();
+                        String nombre = obtenerNombrejugador();
+                        controlador.agregarJugador(nombre);
                         break;
                     }
                     case 2: {
-
                         controlador.iniciarjuego();
                         break;
                     }
@@ -79,20 +78,18 @@ public class VistaConsola implements Ivista{
     }
 
 
-    public String solicitarNombreJugador(){
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Ingrese su nuevo nombre de usuario:");
-        String nombre = sc.nextLine();
-        return nombre;
-
-    }
-
 
     public void mostrarmensaje(String mensaje){
         System.out.println(mensaje);
     }
 
 
+
+    public String obtenerNombrejugador(){
+        System.out.println("Indicar el nombre del jugador : ");
+        String nombrejugador = sc.next();
+        return nombrejugador;
+    }
 
 
     public void mostrarGanador(Jugador jugador){
@@ -180,10 +177,37 @@ public class VistaConsola implements Ivista{
     }
 
 
-    public void mostrarTurno(Jugador jugador){
-        System.out.println("Turno del jugador: " + jugador.getNombreJugador());
+    public void mostrarTurno(){
+        System.out.println("Turno del jugador: " + controlador.getJugadorActual().getNombreJugador());
 
     }
+
+
+    public Carta solicitarCartaArecoger( List<Carta> cartasEnMesa){
+        do {
+            System.out.println("Cartas en tu mano:");
+            for (int i = 0; i < cartasEnMesa.size(); i++) {
+                System.out.println((i + 1) + ": " + cartasEnMesa.get(i).toString());
+            }
+
+            System.out.println("Elige una carta a jugar de la mesa (1, 2, 3, ...):");
+            while (!sc.hasNextInt()) {
+                System.out.println("Por favor, ingresa un número válido.");
+                sc.next();
+            }
+
+            int opcion = sc.nextInt();
+
+            if (opcion < 1 || opcion > cartasEnMesa.size()) {
+                System.out.println("Opción no válida. Por favor, elige una opción dentro del rango válido.");
+            } else {
+                return cartasEnMesa.get(opcion - 1);
+            }
+
+        } while (true);
+    }
+
+
 
 
 
@@ -217,6 +241,12 @@ public class VistaConsola implements Ivista{
             }
         }
     }
+
+
+
+
+    
+
 
 
 

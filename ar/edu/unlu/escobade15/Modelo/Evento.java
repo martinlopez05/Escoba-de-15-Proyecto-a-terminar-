@@ -14,6 +14,12 @@ public enum Evento {
 
     HAY_ESCOBA_DE_MANO,
 
+    FALTA_JUGADORES,
+
+    JUGADOR_SIN_CARTAS,
+
+    NO_HAY_EN_MESA,
+
 
 
 

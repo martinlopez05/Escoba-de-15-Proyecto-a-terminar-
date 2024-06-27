@@ -14,11 +14,11 @@ public class Mesa {
 
 
 
-    public void dejarCarta(Carta carta) {
+    public void agregarCarta(Carta carta) {
         CartasMesa.add(carta);
     }
 
-    public void agarrarCarta(Carta carta){
+    public void sacarCarta(Carta carta){
         CartasMesa.remove(carta);
     }
 
