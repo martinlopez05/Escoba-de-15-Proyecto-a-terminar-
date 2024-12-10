@@ -5,6 +5,7 @@ import ar.edu.unlu.escobade15.Modelo.Carta;
 import ar.edu.unlu.escobade15.Modelo.Jugador;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -14,12 +15,16 @@ public class VentanaGrafica extends JFrame implements Ivista{
     ControladorJuego controlador;
     private JButton btnAgregarJugador;
     private JPanel panel1;
+    private JLabel labelTitulo;
 
     public VentanaGrafica() {
-        setVisible(true);
+        setTitle("Escoba de 15");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setVisible(true);
         this.createUIComponents();
-
+        setContentPane(panel1);
     }
 
 
@@ -37,11 +42,10 @@ public class VentanaGrafica extends JFrame implements Ivista{
                 String nombre = JOptionPane.showInputDialog(VentanaGrafica.this, "Ingrese el nombre del jugador:",
                         "Agregar Jugador", JOptionPane.PLAIN_MESSAGE);
                 if (nombre != null && !nombre.trim().isEmpty()) {
-                    mostrarMensaje("Jugador agregado Correctamente","info","agregado exitoso");
+                    controlador.agregarJugador(nombre);
                 } else if (nombre != null) {
                     mostrarMensaje("El nombre del jugador no puede estar vacío","error","error al agregar");
                 }
-
             }
         });
     }
@@ -58,7 +62,11 @@ public class VentanaGrafica extends JFrame implements Ivista{
 
     @Override
     public void mostrarMensaje(String mensaje) {
-
+        JOptionPane optionpane = new JOptionPane(mensaje);
+        optionpane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+        JDialog dialog = optionpane.createDialog("error");
+        dialog.setVisible(true);
+        dialog.setAlwaysOnTop(true);
     }
 
 
@@ -109,7 +117,11 @@ public class VentanaGrafica extends JFrame implements Ivista{
 
     private void createUIComponents() {
         btnAgregarJugador = new JButton("Agregar Jugador");
+        labelTitulo = new JLabel("Bienvenido a Escoba de 15"); // Texto del label
+        labelTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         panel1 = new JPanel();
+        panel1.setBackground(Color.green);
         panel1.add(btnAgregarJugador);
+        panel1.add(labelTitulo);
     }
 }

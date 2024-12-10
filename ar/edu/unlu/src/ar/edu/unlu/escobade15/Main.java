@@ -14,7 +14,8 @@ public class Main {
         Juego juego = new Juego();
         Ivista vistaConsola = new VistaConsola();
         Ivista vistaGrafica = new VentanaGrafica();
-        ControladorJuego controlador = new ControladorJuego(juego,vistaGrafica);
+        ControladorJuego controlador = new ControladorJuego(juego, vistaGrafica);
+        vistaGrafica.iniciar();
 
 
 
