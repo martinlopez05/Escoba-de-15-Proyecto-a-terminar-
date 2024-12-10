@@ -25,7 +25,6 @@ public class Juego implements Observable {
     }
 
 
-
     public List<Jugador> getJugadores() {
         return jugadores;
     }
@@ -135,11 +134,11 @@ public class Juego implements Observable {
         }
     }
 
-   public List<Carta> cartasMesa(){
+    public List<Carta> cartasMesa(){
         return getMesajuego().getCartasMesa();
    }
 
-   public List<Carta> cartaEnManoJugador(){
+    public List<Carta> cartaEnManoJugador(){
         return getJugadorActual().getCartasEnMano();
    }
 
@@ -193,6 +192,7 @@ public class Juego implements Observable {
             jugadorActual.agregarCartaMasoRonda(carta);
             jugadorActual.sumarpunto(1);
         }
+
     }
 
 

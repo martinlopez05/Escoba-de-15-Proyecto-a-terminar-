@@ -1,6 +1,7 @@
 package ar.edu.unlu.escobade15.Controlador;
 
 import ar.edu.unlu.escobade15.Modelo.*;
+import ar.edu.unlu.escobade15.Vista.Ivista;
 import ar.edu.unlu.escobade15.util.PatronObserver.Observer;
 import ar.edu.unlu.escobade15.Vista.VistaConsola;
 
@@ -8,17 +9,15 @@ import java.util.List;
 
 public class ControladorJuego implements Observer {
     Juego modelo;
-    VistaConsola vista;
+    Ivista vista;
 
 
-    public ControladorJuego(Juego modelo,VistaConsola vista){
+    public ControladorJuego(Juego modelo,Ivista vista){
         this.modelo=modelo;
         this.vista = vista;
         vista.setControlador(this);
         modelo.agregarObservador(this);
     }
-
-
 
 
 
@@ -47,7 +46,7 @@ public class ControladorJuego implements Observer {
                 vista.mostrarCartajugador(modelo.getJugadorActual());
 
                 if(modelo.sepuedeEscobadeMano()){
-                    modelo.hacerEscobadeMano();
+                    modelo.hacerEscobaDeMano();
                 }
 
                 vista.opcionJugador();
@@ -82,16 +81,13 @@ public class ControladorJuego implements Observer {
 
         if(modelo.obtenercantJugadores() < 4){
             modelo.agregarJugador(nombre);
-
-
         }
         if (modelo.obtenercantJugadores() == 4) {
-            vista.mostrarmensaje("Alcanzo la capacidad Maxima de jugadores");
+            vista.mostrarMensaje("Alcanzo la capacidad Maxima de jugadores");
 
         }
 
     }
-
 
     public void bajaCarta(){
         Carta carta = vista.solicitarCartaaBajar(modelo.cartaEnManoJugador());
@@ -122,42 +118,42 @@ public class ControladorJuego implements Observer {
     @Override
     public void update(Object dato) {
         if(dato == Evento.JUGADOR_AGREGADO){
-            vista.mostrarmensaje("Jugador agregado correctamente ");
+            vista.mostrarMensaje("Jugador agregado correctamente ");
 
         }
         if(dato == Evento.FIN_PARTIDA){
-            vista.mostrarmensaje("Fin de la partida...");
-            vista.mostrarmensaje("***Recuento de puntos***");
+            vista.mostrarMensaje("Fin de la partida...");
+            vista.mostrarMensaje("***Recuento de puntos***");
 
 
         }
         if(dato== Evento.CAMBIO_DE_TURNO){
-            vista.mostrarmensaje("\nCambiando de turno...");
+            vista.mostrarMensaje("\nCambiando de turno...");
         }
 
         if(dato==Evento.REPARTIR_CARTAS){
-            vista.mostrarmensaje("Repartiendo cartas...");
+            vista.mostrarMensaje("Repartiendo cartas...");
         }
 
         if(dato==Evento.HAY_ESCOBA){
-            vista.mostrarmensaje("¡Puede hacer escoba!");
+            vista.mostrarMensaje("¡Puede hacer escoba!");
         }
 
         if(dato == Evento.FALTA_JUGADORES){
-            vista.mostrarmensaje("Faltan jugadores...");
+            vista.mostrarMensaje("Faltan jugadores...");
         }
 
 
         if(dato == Evento.JUGADOR_SIN_CARTAS){
-            vista.mostrarmensaje("El jugador no tiene mas cartas en mano");
+            vista.mostrarMensaje("El jugador no tiene mas cartas en mano");
         }
 
         if(dato == Evento.NO_HAY_EN_MESA){
-            vista.mostrarmensaje("No hay cartas en mesas");
+            vista.mostrarMensaje("No hay cartas en mesas");
         }
 
         if(dato == Evento.HAY_ESCOBA_DE_MANO){
-            vista.mostrarmensaje("Felicitaciones hay escoba de mano!");
+            vista.mostrarMensaje("Felicitaciones hay escoba de mano!");
 
         }
 

@@ -77,7 +77,7 @@ public class VistaConsola implements Ivista{
 
 
 
-    public void mostrarmensaje(String mensaje){
+    public void mostrarMensaje(String mensaje){
         System.out.println(mensaje);
     }
 
