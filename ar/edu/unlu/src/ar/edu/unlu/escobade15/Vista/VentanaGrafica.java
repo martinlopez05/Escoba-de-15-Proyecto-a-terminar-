@@ -10,21 +10,40 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class VentanaGrafica extends JFrame implements Ivista{
+public class VentanaGrafica implements Ivista{
 
     ControladorJuego controlador;
-    private JButton btnAgregarJugador;
+    private DialogoNombre dialogoNombre;
+    private String nombreJugador;
     private JPanel panel1;
     private JLabel labelTitulo;
+    private JButton jugarPartidaButton;
+    private JButton reglasButton;
+    private JButton partidasGuardadasButton;
+    private JButton salirButton;
+    private JFrame frame;
 
-    public VentanaGrafica() {
-        setTitle("Escoba de 15");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        this.createUIComponents();
-        setContentPane(panel1);
+    public VentanaGrafica(){
+
+        salirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
+        });
+        jugarPartidaButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //controlador.iniciarjuego();
+
+            }
+        });
+    }
+
+
+    public void registrarJugador(){
+        nombreJugador = dialogoNombre.getNombreJugador();
+        controlador.agregarJugador(nombreJugador);
     }
 
 
@@ -36,23 +55,31 @@ public class VentanaGrafica extends JFrame implements Ivista{
 
     @Override
     public void iniciar() {
-        btnAgregarJugador.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nombre = JOptionPane.showInputDialog(VentanaGrafica.this, "Ingrese el nombre del jugador:",
-                        "Agregar Jugador", JOptionPane.PLAIN_MESSAGE);
-                if (nombre != null && !nombre.trim().isEmpty()) {
-                    controlador.agregarJugador(nombre);
-                } else if (nombre != null) {
-                    mostrarMensaje("El nombre del jugador no puede estar vacío","error","error al agregar");
-                }
-            }
-        });
+        frame = new JFrame();
+        frame.setTitle("Escoba de 15");
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setContentPane(panel1);
+        frame.setVisible(true);
+        labelTitulo = new JLabel("Bienvenido a Escoba de 15");
+        labelTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        panel1 = new JPanel();
+        panel1.setBackground(Color.green);
+        panel1.add(labelTitulo);
+        dialogoNombre = new DialogoNombre();
+        dialogoNombre.setSize(400, 200);
+        dialogoNombre.setLocationRelativeTo(null);
+        dialogoNombre.setVisible(true);
+        registrarJugador();
+        dialogoNombre.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+
     }
 
     @Override
     public void mostrarTurno() {
-
+        mostrarMensaje("Turno del jugador : " + controlador.getJugadorActual().getNombreJugador());
     }
 
     @Override
@@ -64,7 +91,7 @@ public class VentanaGrafica extends JFrame implements Ivista{
     public void mostrarMensaje(String mensaje) {
         JOptionPane optionpane = new JOptionPane(mensaje);
         optionpane.setMessageType(JOptionPane.INFORMATION_MESSAGE);
-        JDialog dialog = optionpane.createDialog("error");
+        JDialog dialog = optionpane.createDialog("Informacion");
         dialog.setVisible(true);
         dialog.setAlwaysOnTop(true);
     }
@@ -98,6 +125,7 @@ public class VentanaGrafica extends JFrame implements Ivista{
     @Override
     public void mostrarCartajugador(Jugador jugadorActual) {
 
+
     }
 
     @Override
@@ -115,13 +143,7 @@ public class VentanaGrafica extends JFrame implements Ivista{
 
     }
 
-    private void createUIComponents() {
-        btnAgregarJugador = new JButton("Agregar Jugador");
-        labelTitulo = new JLabel("Bienvenido a Escoba de 15"); // Texto del label
-        labelTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-        panel1 = new JPanel();
-        panel1.setBackground(Color.green);
-        panel1.add(btnAgregarJugador);
-        panel1.add(labelTitulo);
-    }
+
+
+
 }

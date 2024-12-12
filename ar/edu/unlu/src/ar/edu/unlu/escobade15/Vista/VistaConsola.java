@@ -61,7 +61,13 @@ public class VistaConsola implements Ivista{
                         break;
                     }
                     case 2: {
-                        controlador.iniciarjuego();
+                        controlador.iniciarPartida();
+                        while (!controlador.barajaEsVacia()) {
+                            controlador.comenzarAjugar();
+                            if(controlador.jugadoresSinCartas()){
+                                controlador.repartirCartas();
+                            }
+                        }
                         break;
                     }
 
@@ -167,10 +173,11 @@ public class VistaConsola implements Ivista{
 
             switch (opcion) {
                 case 1:
-                    controlador.bajaCarta();
+                    Carta carta = solicitarCartaArecoger(controlador.getCartasJugadorActual());
+                    controlador.bajaCarta(carta);
                     break;
                 case 2:
-                    controlador.recogeCartaMesa();
+                    //controlador.recogeCartaMesa();
                     break;
                 case 3:
                     //aca va la opcion de seleccionar carta a jugar de la mano

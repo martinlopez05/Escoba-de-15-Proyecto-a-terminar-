@@ -6,34 +6,34 @@ import java.util.List;
 public class Mesa {
 
 
-    private List<Carta> CartasMesa;
+    private List<Carta> cartasMesa;
 
     public Mesa (){
-        this.CartasMesa = new ArrayList<>();
+        this.cartasMesa = new ArrayList<>();
     }
 
 
 
     public void agregarCarta(Carta carta) {
-        CartasMesa.add(carta);
+        cartasMesa.add(carta);
     }
 
     public void sacarCarta(Carta carta){
-        CartasMesa.remove(carta);
+        cartasMesa.remove(carta);
     }
 
-    public boolean MesaVacia() {
-        return CartasMesa.isEmpty();
+    public boolean mesaVacia() {
+        return cartasMesa.isEmpty();
     }
 
     public List<Carta> getCartasMesa() {
-        return CartasMesa;
+        return cartasMesa;
     }
 
     public boolean escobaDeMano(){
         int suma = 0;
 
-        for (Carta carta : CartasMesa) {
+        for (Carta carta : cartasMesa) {
             suma += carta.getValor();
 
         }

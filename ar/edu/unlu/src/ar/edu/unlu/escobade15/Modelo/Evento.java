@@ -22,6 +22,10 @@ public enum Evento {
 
     NO_HAY_EN_MESA,
 
+    CAPACIDAD_ALCAZADA_JUGADORES,
+
+    PARTIDA_INICIADA,
+
 
 
 

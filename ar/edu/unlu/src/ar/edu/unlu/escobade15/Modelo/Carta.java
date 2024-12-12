@@ -1,15 +1,18 @@
 package ar.edu.unlu.escobade15.Modelo;
 
+import javax.swing.*;
+
 public class Carta {
     private int numero;
     private Palo palo;
-
     private int valor;
+    private ImageIcon imagen;
 
     public Carta(int numero, Palo palo , int valor) {
         this.numero = numero;
         this.palo = palo;
         this.valor = valor;
+        this.imagen = new ImageIcon("imagenCarta/" +  palo.name().toLowerCase() + numero + ".jpg");
 
     }
 
@@ -30,6 +33,7 @@ public class Carta {
         return "[numero: " + getNumero() + ",palo: " + getPalo() + ",valor: " + getValor() + "]";
     }
 
-   
-
+    public ImageIcon getImagen() {
+        return imagen;
+    }
 }

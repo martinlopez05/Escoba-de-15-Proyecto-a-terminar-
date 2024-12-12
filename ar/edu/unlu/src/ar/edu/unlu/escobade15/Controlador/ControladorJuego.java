@@ -19,50 +19,12 @@ public class ControladorJuego implements Observer {
         modelo.agregarObservador(this);
     }
 
-
-
-    public void iniciarjuego() {
-        if(modelo.sePuedeIniciarpartida()){
-            modelo.repartirMano();
-            jugarPartida();
-
-        }
-
+    public boolean sePuedeIniciar(){
+        return modelo.sePuedeIniciarpartida();
     }
 
-
-
-
-
-
-    public void jugarPartida() {
-
-        while (!modelo.getBaraja().esVacia()) {
-            if(modelo.jugadoresTienenCartas()) {
-
-                vista.mostrarTurno();
-                Mesa mesa = modelo .getMesajuego();
-                vista.mostrarMesa(mesa.getCartasMesa());
-                vista.mostrarCartajugador(modelo.getJugadorActual());
-
-                if(modelo.sepuedeEscobadeMano()){
-                    modelo.hacerEscobaDeMano();
-                }
-
-                vista.opcionJugador();
-
-
-
-            }
-            else{
-                modelo.repartirMano();
-            }
-            modelo.actualizaTurno();
-
-        }
-
-
-        juegoTerminado();
+    public boolean jugadoresSinCartas(){
+        return modelo.jugadoresSinCartas();
     }
 
 
@@ -74,44 +36,51 @@ public class ControladorJuego implements Observer {
         return modelo.getMesajuego();
     }
 
+    public boolean faltanCartas(){
+        return modelo.faltanCartas();
+    }
 
+
+    public void repartirCartas(){
+        modelo.repartirMano();
+    }
+
+    public boolean barajaEsVacia(){
+        return modelo.barajaEsVacia();
+    }
+
+    public void actualizarTurno(){
+        modelo.actualizarTurno();
+    }
+
+    public void comenzarAjugar(){
+        vista.mostrarTurno();
+        vista.mostrarMesa(getMesaActual().getCartasMesa());
+        vista.mostrarCartajugador(getJugadorActual());
+        vista.opcionJugador();
+        actualizarTurno();
+
+    }
 
 
     public void agregarJugador(String nombre) {
-
-        if(modelo.obtenercantJugadores() < 4){
-            modelo.agregarJugador(nombre);
-        }
-        if (modelo.obtenercantJugadores() == 4) {
-            vista.mostrarMensaje("Alcanzo la capacidad Maxima de jugadores");
-
-        }
+        modelo.agregarJugador(nombre);
 
     }
 
-    public void bajaCarta(){
-        Carta carta = vista.solicitarCartaaBajar(modelo.cartaEnManoJugador());
+    public void bajaCarta(Carta carta){
         modelo.jugadorBajaCarta(carta);
+
+    }
+
+    public void iniciarPartida(){
+        modelo.iniciarPartida();
     }
 
 
-    public void recogeCartaMesa(){
-        Carta carta = vista.solicitarCartaArecoger(modelo.cartasMesa());
-    }
-
-
-
-
-
-
-
-    public void juegoTerminado(){
-        vista.mostrarPuntosjugador(modelo.getJugadores());
-        modelo.sumarPuntoalFinal();
-        vista.mostrarGanador(modelo.obtenerGanador());
-    }
-
-
+   public List<Carta> getCartasJugadorActual(){
+        return modelo.cartaEnManoJugador();
+   }
 
 
 
@@ -143,6 +112,10 @@ public class ControladorJuego implements Observer {
             vista.mostrarMensaje("Faltan jugadores...");
         }
 
+        if(dato == Evento.CAPACIDAD_ALCAZADA_JUGADORES){
+            vista.mostrarMensaje("No se pueden agregar mas jugadores");
+        }
+
 
         if(dato == Evento.JUGADOR_SIN_CARTAS){
             vista.mostrarMensaje("El jugador no tiene mas cartas en mano");
@@ -155,6 +128,10 @@ public class ControladorJuego implements Observer {
         if(dato == Evento.HAY_ESCOBA_DE_MANO){
             vista.mostrarMensaje("Felicitaciones hay escoba de mano!");
 
+        }
+
+        if(dato == Evento.PARTIDA_INICIADA){
+            
         }
 
 

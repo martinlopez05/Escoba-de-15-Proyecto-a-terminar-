@@ -14,13 +14,10 @@ public class Main {
         Juego juego = new Juego();
         Ivista vistaConsola = new VistaConsola();
         Ivista vistaGrafica = new VentanaGrafica();
-        ControladorJuego controlador = new ControladorJuego(juego, vistaGrafica);
-        vistaGrafica.iniciar();
-
-
-
-
+        ControladorJuego controlador = new ControladorJuego(juego, vistaConsola);
+        vistaConsola.iniciar();
 
     }
+
 }
 

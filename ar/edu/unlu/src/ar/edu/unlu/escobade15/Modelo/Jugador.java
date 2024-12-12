@@ -3,9 +3,9 @@ package ar.edu.unlu.escobade15.Modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jugador {
+public class Jugador implements IJugador{
     private String nombreJugador;
-    private List<Carta> CartasMano;
+    private List<Carta> CartasEnMano;
 
     private int puntuacion;
 
@@ -13,18 +13,11 @@ public class Jugador {
 
     public Jugador(String nombreJugador) {
         this.nombreJugador = nombreJugador;
-        CartasMano = new ArrayList<Carta>();
+        CartasEnMano = new ArrayList<Carta>();
         MasoRonda = new MasoJugador();
         this.puntuacion = 0;
     }
 
-    public String getNombreJugador() {
-        return nombreJugador;
-    }
-
-    public List<Carta> getCartasEnMano() {
-        return CartasMano;
-    }
 
     public MasoJugador getMasoRonda() {
         return MasoRonda;
@@ -36,12 +29,12 @@ public class Jugador {
 
 
     public void recibirCarta(Carta carta) {
-        CartasMano.add(carta);
+        CartasEnMano.add(carta);
     }
 
     public void sacarCarta(Carta carta) {
         
-        CartasMano.remove(carta);
+        CartasEnMano.remove(carta);
         
     }
 
@@ -51,12 +44,31 @@ public class Jugador {
     }
 
 
+    public boolean faltanCartasenMano(){
+        if(getCartasEnMano().isEmpty()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 
     public void sumarpunto(int numero){
         puntuacion+=numero;
     }
 
 
+
+    @Override
+    public String getNombreJugador() {
+        return nombreJugador;
+    }
+
+    @Override
+    public List<Carta> getCartasEnMano() {
+        return CartasEnMano;
+    }
 }
 
 

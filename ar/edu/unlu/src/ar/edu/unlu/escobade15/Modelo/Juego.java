@@ -16,9 +16,8 @@ public class Juego implements Observable {
     public Mesa mesajuego;
 
 
-
-    public Juego(){
-        this.baraja=new Baraja();
+    public Juego() {
+        this.baraja = new Baraja();
         jugadores = new ArrayList<>();
         this.mesajuego = new Mesa();
         this.listaObservadores = new ArrayList<>();
@@ -44,22 +43,64 @@ public class Juego implements Observable {
     }
 
 
-    public void repartirMano(){
-        if(!baraja.esVacia()) {
-            for (Jugador jugador : jugadores) {
-                for (int i = 0; i < 3; i++) {
+    public void repartirMano() {
+
+        for (Jugador jugador : jugadores){
+            for(int i=0 ; i<3 ; i++){
+                if(!barajaEsVacia()){
                     jugador.recibirCarta(baraja.sacarCarta());
-
+                }
+                else{
+                    break;
                 }
             }
-
-            if (mesajuego.MesaVacia()) {
-                for (int i = 0; i < 4; i++) {
-                    mesajuego.agregarCarta(baraja.sacarCarta());
-                }
-            }
-            notificar(Evento.REPARTIR_CARTAS);
         }
+        if (mesajuego.mesaVacia()) {
+            for (int i = 0; i < 4; i++) {
+                if (!barajaEsVacia()) {
+                    mesajuego.agregarCarta(baraja.sacarCarta());
+                } else {
+                    break;
+                }
+            }
+        }
+        notificar(Evento.REPARTIR_CARTAS);
+    }
+
+
+    public boolean jugadoresSinCartas(){
+        return jugadores.stream().allMatch(Jugador::faltanCartasenMano);
+    }
+
+
+    public void iniciarPartida(){
+        if(sePuedeIniciarpartida()) {
+            baraja.mezclarCartas();
+            repartirMano();
+            notificar(Evento.PARTIDA_INICIADA);
+        }
+    }
+
+
+    public boolean barajaEsVacia(){
+        return baraja.esVacia();
+    }
+
+
+    public boolean faltanCartas(){
+        boolean faltanCartasJugadores = false;
+        for(Jugador jugador : jugadores){
+            if(jugador.faltanCartasenMano()){
+                return true;
+            }
+        }
+        if(mesajuego.mesaVacia() || faltanCartasJugadores ){
+            return true;
+        }
+        else{
+            return false;
+        }
+
     }
 
 
@@ -76,7 +117,7 @@ public class Juego implements Observable {
     }
 
 
-    public void actualizaTurno() {
+    public void actualizarTurno() {
         int indiceActual = jugadores.indexOf(jugadorActual);
         if (indiceActual != -1) {
             int siguienteIndice = (indiceActual + 1) % jugadores.size();
@@ -88,20 +129,7 @@ public class Juego implements Observable {
 
 
 
-    public boolean jugadoresTienenCartas(){
-        boolean encontrado=false;
-        for(Jugador jugador : jugadores){
-            if(!jugador.getCartasEnMano().isEmpty()){
-                encontrado = true;
-            }
-        }
-
-        return encontrado;
-
-    }
-
-
-
+    //metodo donde un jugador baja una carta a la mesa
     public void jugadorBajaCarta(Carta carta) {
         if (!jugadorActual.getCartasEnMano().isEmpty()) {
             mesajuego.agregarCarta(carta);
@@ -111,44 +139,46 @@ public class Juego implements Observable {
         }
     }
 
-
-
-    public void jugadorAgarraCarta(Carta carta){
-        if(hayCartasenlaMesa()){
-            jugadorActual.recibirCarta(carta);
-            mesajuego.sacarCarta(carta);
+    //metodo para verificar si suman 15 la carta del jugador con alguna/s de la mesa
+    public boolean suman15(Carta cartaJugador,List<Carta> cartasMesa){
+        int sumaMesa=0;
+        for(Carta carta : cartasMesa){
+            sumaMesa+= carta.getValor();
         }
-        else{
-            notificar(Evento.NO_HAY_EN_MESA);
-        }
+        return (cartaJugador.getValor() + sumaMesa)== 15;
+
+    }
+
+    public void jugarCarta(Carta cartaJugador,List<Carta> cartasMesa) {
+        sum
     }
 
 
 
-    public boolean hayCartasenlaMesa(){
-        if(!mesajuego.MesaVacia()){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
+
+
 
     public List<Carta> cartasMesa(){
         return getMesajuego().getCartasMesa();
-   }
+    }
 
     public List<Carta> cartaEnManoJugador(){
         return getJugadorActual().getCartasEnMano();
-   }
+    }
 
 
 
     public void agregarJugador(String nombre) {
-        Jugador jugador = new Jugador(nombre);
-        jugadores.add(jugador);
-        jugadorActual = jugadores.get(0);
-        this.notificar(Evento.JUGADOR_AGREGADO);
+        if(obtenercantJugadores()>=4){
+            this.notificar(Evento.CAPACIDAD_ALCAZADA_JUGADORES);
+        }
+        else{
+            Jugador jugador = new Jugador(nombre);
+            jugadores.add(jugador);
+            jugadorActual = jugadores.get(0);
+            this.notificar(Evento.JUGADOR_AGREGADO);
+        }
+
     }
 
 
@@ -196,31 +226,9 @@ public class Juego implements Observable {
     }
 
 
-    // agrega una carta al maso a jugar
-    public void agregarCartaJugar(Carta carta) {
-        masoAjugar.agregarCarta(carta);
-    }
 
 
-    public boolean cartasSuman15(){
-        boolean valor = masoAjugar.suman15();
-        return valor;
-
-    }
-
-    // el jugador suma punto con una/s carta/s de la mesa pero no hace escoba
-
-    public void hacerJuego(Carta cartajugador, List<Carta> cartasMesa){
-        jugadorActual.sacarCarta(cartajugador);
-        jugadorActual.agregarCartaMasoRonda(cartajugador);
-        for (Carta carta : cartasMesa){
-            mesajuego.sacarCarta(carta);
-            jugadorActual.agregarCartaMasoRonda(carta);
-        }
-    }
-
-
-
+    //meotod para sumar puntos al final de la partida
     public void sumarPuntoalFinal(){
         notificar(Evento.FIN_PARTIDA);
         Jugador jmaxCartas = jugadores.get(0);
@@ -278,9 +286,4 @@ public class Juego implements Observable {
         listaObservadores.remove(observador);
 
     }
-
-
-
-
-
 }
