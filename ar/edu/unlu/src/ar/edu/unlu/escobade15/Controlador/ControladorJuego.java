@@ -36,9 +36,6 @@ public class ControladorJuego implements Observer {
         return modelo.getMesajuego();
     }
 
-    public boolean faltanCartas(){
-        return modelo.faltanCartas();
-    }
 
 
     public void repartirCartas(){
@@ -63,6 +60,13 @@ public class ControladorJuego implements Observer {
     }
 
 
+
+
+    public void SeleccionarCartaAjugar(Carta carta){
+        modelo.seleccionarCartaJugar(carta);
+    }
+
+
     public void agregarJugador(String nombre) {
         modelo.agregarJugador(nombre);
 
@@ -80,6 +84,10 @@ public class ControladorJuego implements Observer {
 
    public List<Carta> getCartasJugadorActual(){
         return modelo.cartaEnManoJugador();
+   }
+
+   public int obtenerCantidadJugadores(){
+        return modelo.obtenercantJugadores();
    }
 
 
@@ -131,10 +139,23 @@ public class ControladorJuego implements Observer {
         }
 
         if(dato == Evento.PARTIDA_INICIADA){
-            
+            vista.mostrarMensaje("####### PARTIDA INICIADA #######");
         }
 
+        if(dato == Evento.SUMAN_15){
+              vista.mostrarMensaje("La carta seleccionada suman 15 con carta de la mesa... ¡Felicitaciones!");
+        }
+        if(dato == Evento.NO_SUMAN_15){
+            vista.mostrarMensaje("Su carta no suma 15 con ninguna/s de la mesa...");
+        }
 
+        if(dato == Evento.SUMAN_15_CON_TODAS){
+            vista.mostrarMensaje("Su carta suma 15 con TODAS  de la mesa... ¡Felicitaciones!");
+        }
+
+        if(dato == Evento.JUGADOR_SUMA_PUNTO){
+            System.out.println("¡El Jugador " + getJugadorActual().getNombreJugador() + "suma punto!");
+        }
 
 
     }

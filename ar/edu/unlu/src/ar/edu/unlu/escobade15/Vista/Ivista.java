@@ -12,7 +12,7 @@ public interface Ivista {
     public void mostrarTurno();
     public void mostrarMesa(List<Carta> cartasMesa);
     public void mostrarMensaje(String mensaje);
-    public Carta solicitarCartaArecoger(List<Carta> cartasMesa);
+    public Carta solicitarCartaAjugar(List<Carta> cartasMesa);
     public Carta solicitarCartaaBajar(List<Carta> cartas);
     public void mostrarCartajugador(Jugador jugadorActual);
     public void opcionJugador();

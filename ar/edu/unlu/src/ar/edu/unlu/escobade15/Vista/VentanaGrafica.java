@@ -96,6 +96,11 @@ public class VentanaGrafica implements Ivista{
         dialog.setAlwaysOnTop(true);
     }
 
+    @Override
+    public Carta solicitarCartaAjugar(List<Carta> cartasMesa) {
+        return null;
+    }
+
 
     public void mostrarMensaje(String mensaje, String tipo, String titulo) {
         JOptionPane optionpane = new JOptionPane(mensaje);
@@ -112,10 +117,7 @@ public class VentanaGrafica implements Ivista{
     }
 
 
-    @Override
-    public Carta solicitarCartaArecoger(List<Carta> cartasMesa) {
-        return null;
-    }
+
 
     @Override
     public Carta solicitarCartaaBajar(List<Carta> cartas) {

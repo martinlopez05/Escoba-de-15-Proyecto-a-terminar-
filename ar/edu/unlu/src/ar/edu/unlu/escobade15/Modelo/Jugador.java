@@ -3,7 +3,7 @@ package ar.edu.unlu.escobade15.Modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jugador implements IJugador{
+public class Jugador {
     private String nombreJugador;
     private List<Carta> CartasEnMano;
 
@@ -32,7 +32,7 @@ public class Jugador implements IJugador{
         CartasEnMano.add(carta);
     }
 
-    public void sacarCarta(Carta carta) {
+    public void sacarCartaMano(Carta carta) {
         
         CartasEnMano.remove(carta);
         
@@ -60,12 +60,12 @@ public class Jugador implements IJugador{
 
 
 
-    @Override
+
     public String getNombreJugador() {
         return nombreJugador;
     }
 
-    @Override
+
     public List<Carta> getCartasEnMano() {
         return CartasEnMano;
     }

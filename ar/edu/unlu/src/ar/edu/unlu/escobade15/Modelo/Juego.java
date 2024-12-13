@@ -5,6 +5,7 @@ import ar.edu.unlu.escobade15.util.PatronObserver.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Juego implements Observable {
 
@@ -12,7 +13,6 @@ public class Juego implements Observable {
     private Baraja baraja;
     private List<Jugador> jugadores;
     public Jugador jugadorActual;
-    public MasoAjugar masoAjugar;
     public Mesa mesajuego;
 
 
@@ -23,17 +23,17 @@ public class Juego implements Observable {
         this.listaObservadores = new ArrayList<>();
     }
 
-
+    //retorna una lista de los jugador en la partida
     public List<Jugador> getJugadores() {
         return jugadores;
     }
 
+    //retorna el Jugador Actual -> el que esta en su turno de juego
     public Jugador getJugadorActual() {
         return jugadorActual;
     }
 
 
-    // corregir retornar la lista de carta mesa
     public Mesa getMesajuego() {
         return mesajuego;
     }
@@ -43,6 +43,8 @@ public class Juego implements Observable {
     }
 
 
+
+    // metodo para repartir cartas a cada jugador y a la mesa
     public void repartirMano() {
 
         for (Jugador jugador : jugadores){
@@ -68,25 +70,29 @@ public class Juego implements Observable {
     }
 
 
+    //metodo que retorna true  si los jugadores se quedan sin carta
     public boolean jugadoresSinCartas(){
         return jugadores.stream().allMatch(Jugador::faltanCartasenMano);
     }
 
 
+    //metodo para iniciar una partida
     public void iniciarPartida(){
         if(sePuedeIniciarpartida()) {
             baraja.mezclarCartas();
-            repartirMano();
             notificar(Evento.PARTIDA_INICIADA);
+            repartirMano();
+            sortearTurno();
         }
     }
 
-
+    //metodo que retorna true si la baraja se queda sin cartas
     public boolean barajaEsVacia(){
         return baraja.esVacia();
     }
 
 
+    /*
     public boolean faltanCartas(){
         boolean faltanCartasJugadores = false;
         for(Jugador jugador : jugadores){
@@ -101,10 +107,10 @@ public class Juego implements Observable {
             return false;
         }
 
-    }
+    }*/
 
 
-
+    //metodo que retorna si se puede empezar una partida
     public boolean sePuedeIniciarpartida(){
         if(jugadores.size() >= 2){
             return true;
@@ -117,6 +123,7 @@ public class Juego implements Observable {
     }
 
 
+    //metodo que cambia al jugadorActual en la partida
     public void actualizarTurno() {
         int indiceActual = jugadores.indexOf(jugadorActual);
         if (indiceActual != -1) {
@@ -128,46 +135,114 @@ public class Juego implements Observable {
     }
 
 
-
     //metodo donde un jugador baja una carta a la mesa
     public void jugadorBajaCarta(Carta carta) {
         if (!jugadorActual.getCartasEnMano().isEmpty()) {
             mesajuego.agregarCarta(carta);
-            jugadorActual.sacarCarta(carta);
+            jugadorActual.sacarCartaMano(carta);
         } else {
             notificar(Evento.JUGADOR_SIN_CARTAS);
         }
     }
 
-    //metodo para verificar si suman 15 la carta del jugador con alguna/s de la mesa
-    public boolean suman15(Carta cartaJugador,List<Carta> cartasMesa){
-        int sumaMesa=0;
-        for(Carta carta : cartasMesa){
-            sumaMesa+= carta.getValor();
+    //metodo para obtener la combinacion de carta/s de la mesa que suman 15 con la carta del jugador
+    public List<Carta> obtenerCombinacion15(Carta cartaJugador, List<Carta> cartasMesa){
+        List<List<Carta>> subconjuntos = generarCombinaciones(cartasMesa);
+
+        for(List<Carta> subconjunto : subconjuntos){
+            int suma = cartaJugador.getValor();
+            for(Carta carta : subconjunto){
+                suma+=carta.getValor();
+            }
+            if(suma == 15){
+                return subconjunto;
+            }
+
         }
-        return (cartaJugador.getValor() + sumaMesa)== 15;
+        return null;
 
     }
 
-    public void jugarCarta(Carta cartaJugador,List<Carta> cartasMesa) {
-        sum
+
+    //metodo que retorna true si se encuentra alguna combinacion de carta/s de la mesa que suman 15 con la del jugador
+    public boolean suman15(Carta cartaJugador, List<Carta> cartasMesa){
+
+        List<List<Carta>> combinacionesPosibles = generarCombinaciones(cartasMesa);
+        for(List<Carta> combinacion : combinacionesPosibles){
+            int suma = cartaJugador.getValor();
+            for(Carta carta : combinacion){
+                suma+=carta.getValor();
+            }
+            if(suma == 15){
+                if(combinacion.size() == mesajuego.getCartasMesa().size()){
+                    this.notificar(Evento.SUMAN_15_CON_TODAS);
+                    return true;
+                }
+                else{
+                    this.notificar(Evento.SUMAN_15);
+                    return true;
+                }
+
+            }
+
+        }
+        this.notificar(Evento.NO_SUMAN_15);
+        return false;
     }
 
 
+    //metodo donde el jugador selecciona una carta de su mano y suma 15 con alguna/s de la mesa
+    public void seleccionarCartaJugar(Carta cartaJugador){
+        if(suman15(cartaJugador,mesajuego.getCartasMesa())){
+            List<Carta> cartaEnJuegoMesa = obtenerCombinacion15(cartaJugador,mesajuego.getCartasMesa());
+
+            if(cartaEnJuegoMesa.size() == mesajuego.getCartasMesa().size()){
+                sumarpunto(1);
+                this.notificar(Evento.JUGADOR_SUMA_PUNTO);
+            }
+
+            for(Carta carta : cartaEnJuegoMesa){
+                mesajuego.sacarCarta(carta);
+                jugadorActual.agregarCartaMasoRonda(carta);
+            }
+            jugadorActual.sacarCartaMano(cartaJugador);
+            jugadorActual.agregarCartaMasoRonda(cartaJugador);
 
 
+        }
+
+    }
 
 
+    //metodo para generar las combinaciones de las cartas de la mesa y se retorna una lista de esas combinaciones
+    private List<List<Carta>> generarCombinaciones(List<Carta> cartas) {
+        List<List<Carta>> combinacionesPosibles = new ArrayList<>();
+        int n = cartas.size();
+        for (int i = 0; i < (1 << n); i++) {
+            List<Carta> subconjuntoCartas = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                if ((i & (1 << j)) != 0) {
+                    subconjuntoCartas.add(cartas.get(j));
+                }
+            }
+            combinacionesPosibles.add(subconjuntoCartas);
+        }
+        return combinacionesPosibles;
+    }
+
+
+    //retorna las cartas de la mesa
     public List<Carta> cartasMesa(){
         return getMesajuego().getCartasMesa();
     }
 
+    //retorna las carta en mano del jugador
     public List<Carta> cartaEnManoJugador(){
         return getJugadorActual().getCartasEnMano();
     }
 
 
-
+   //metodo para agregar un jugador dado su nombre
     public void agregarJugador(String nombre) {
         if(obtenercantJugadores()>=4){
             this.notificar(Evento.CAPACIDAD_ALCAZADA_JUGADORES);
@@ -182,7 +257,17 @@ public class Juego implements Observable {
     }
 
 
+    //metodo en el cual se sortea el turno en el inicio de la partida
+    public void sortearTurno(){
+        if (!jugadores.isEmpty()) {
+            Random random = new Random();
+            int indiceAleatorio = random.nextInt(jugadores.size());
+            jugadorActual = jugadores.get(indiceAleatorio);
+        }
+    }
 
+
+    //metodo para obtener el ganador de la partida
     public Jugador obtenerGanador() {
         Jugador ganador = jugadores.get(0);
 
@@ -196,14 +281,14 @@ public class Juego implements Observable {
     }
 
 
-
+   //metodo para obtener la cantidad de jugadores
     public int  obtenercantJugadores(){
         return jugadores.size();
 
     }
 
 
-
+    //metodo que retorna true si hay escoba de mano (todas las cartas de la mesa suman exactamente 15)
     public boolean sepuedeEscobadeMano(){
         if(mesajuego.escobaDeMano()){
             notificar(Evento.HAY_ESCOBA_DE_MANO);
@@ -215,20 +300,25 @@ public class Juego implements Observable {
 
     }
 
-
+    //metodo donde se realiza el manejo de las cartas si hay escoba de mano
     public void hacerEscobaDeMano(){
         for(Carta carta : cartasMesa()){
             mesajuego.sacarCarta(carta);
             jugadorActual.agregarCartaMasoRonda(carta);
-            jugadorActual.sumarpunto(1);
+            sumarpunto(1);
         }
 
     }
 
+    //metodo en el cual se suma un punto al jugador actual
+    public void sumarpunto(int punto){
+        jugadorActual.sumarpunto(1);
+        this.notificar(Evento.JUGADOR_SUMA_PUNTO);
+    }
 
 
 
-    //meotod para sumar puntos al final de la partida
+    //metodo para sumar puntos al final de la partida
     public void sumarPuntoalFinal(){
         notificar(Evento.FIN_PARTIDA);
         Jugador jmaxCartas = jugadores.get(0);

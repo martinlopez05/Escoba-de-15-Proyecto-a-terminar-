@@ -21,9 +21,7 @@ public class VistaConsola implements Ivista{
 
 
     public void mostrarMenuPrincipal() {
-        System.out.println("############################");
-        System.out.println("####### Escoba de 15 #######");
-        System.out.println("############################");
+        System.out.println("\n####### MENÚ PRINCIPAL #######");;
         System.out.println();
         System.out.println("Selecciona una opción:");
         System.out.println("1 - Agregar jugador");
@@ -39,7 +37,7 @@ public class VistaConsola implements Ivista{
 
     public void iniciar() {
         int opcion;
-
+        System.out.println("¡BIENVENIDO A ESCOBA DE 15!");
         do {
             mostrarMenuPrincipal();
             System.out.println("Ingresa una opcion:");
@@ -56,16 +54,27 @@ public class VistaConsola implements Ivista{
             } else {
                 switch (opcion) {
                     case 1: {
-                        controlador.agregarJugador(obtenerNombrejugador());
-                        presionarEnter();
+                        if(controlador.obtenerCantidadJugadores() < 4){
+                            controlador.agregarJugador(obtenerNombrejugador());
+                            presionarEnter();
+                        }
+                        else{
+                            mostrarMensaje("No se pueden agregar mas jugadores");
+                        }
+
                         break;
                     }
                     case 2: {
-                        controlador.iniciarPartida();
-                        while (!controlador.barajaEsVacia()) {
-                            controlador.comenzarAjugar();
-                            if(controlador.jugadoresSinCartas()){
-                                controlador.repartirCartas();
+                        if(controlador.obtenerCantidadJugadores()<2){
+                            mostrarMensaje("¡FALTAN JUGADORES! ---- minimo de jugadores (2) -----máximo de jugadores (4)");
+                        }
+                        else{
+                            controlador.iniciarPartida();
+                            while (!controlador.barajaEsVacia()) {
+                                controlador.comenzarAjugar();
+                                if(controlador.jugadoresSinCartas()){
+                                    controlador.repartirCartas();
+                                }
                             }
                         }
                         break;
@@ -123,12 +132,11 @@ public class VistaConsola implements Ivista{
                 System.out.println((i + 1) + ": " + cartasEnMano.get(i).toString());
             }
 
-            System.out.println("Elige una carta a jugar de tu mano (1, 2, 3, ...):");
+            System.out.println("Elige una carta a bajar de tu mano (1, 2, 3, ...):");
             while (!sc.hasNextInt()) {
                 System.out.println("Por favor, ingresa un número válido.");
                 sc.next();
             }
-
             int opcion = sc.nextInt();
 
             if (opcion < 1 || opcion > cartasEnMano.size()) {
@@ -148,16 +156,14 @@ public class VistaConsola implements Ivista{
         System.out.println("\n####### ¿Qué deseas hacer? #######");
         System.out.println("Selecciona una opción:");
         System.out.println("1 - Dejar carta en mesa");
-        System.out.println("2 - Recoger carta/s de la mesa");
-        System.out.println("3 - Seleccionar carta a jugar");
-        System.out.println("4 - Seleccionar carta de mesa a jugar");
+        System.out.println("2 - Seleccionar carta a jugar");
 
     }
 
 
 
 
-    //arreglar funcion con controlador
+
     public void opcionJugador() {
         int opcion;
 
@@ -166,49 +172,43 @@ public class VistaConsola implements Ivista{
             System.out.println("Ingresa una opción:");
             while (!sc.hasNextInt()) {
                 System.out.println("Por favor, ingresa un número válido.");
-                sc.next(); // Consumir entrada no válida
+                sc.next();
             }
 
             opcion = sc.nextInt();
 
             switch (opcion) {
                 case 1:
-                    Carta carta = solicitarCartaArecoger(controlador.getCartasJugadorActual());
-                    controlador.bajaCarta(carta);
+                    Carta cartaAbajar = solicitarCartaaBajar(controlador.getCartasJugadorActual());
+                    controlador.bajaCarta(cartaAbajar);
                     break;
                 case 2:
-                    //controlador.recogeCartaMesa();
+                    Carta cartaAjugar = solicitarCartaAjugar(controlador.getCartasJugadorActual());
+                    controlador.SeleccionarCartaAjugar(cartaAjugar);
                     break;
-                case 3:
-                    //aca va la opcion de seleccionar carta a jugar de la mano
-
-                case 4 :
-                    // aca va la opcion de seleccionar carta/s a jugar de la mesa
-
                 default:
                     System.out.println("Opción no válida. Inténtalo de nuevo.");
             }
 
-        } while (opcion < 1 || opcion > 4);
+        } while (opcion < 1 || opcion > 2);
 
 
     }
 
 
     public void mostrarTurno(){
-        System.out.println("Turno del jugador: " + controlador.getJugadorActual().getNombreJugador());
+        System.out.println("\nTurno del jugador: " + controlador.getJugadorActual().getNombreJugador());
 
     }
 
 
-    public Carta solicitarCartaArecoger( List<Carta> cartasEnMesa){
+    public Carta solicitarCartaAjugar(List<Carta> cartasEnMano){
         do {
             System.out.println("Cartas en tu mano:");
-            for (int i = 0; i < cartasEnMesa.size(); i++) {
-                System.out.println((i + 1) + ": " + cartasEnMesa.get(i).toString());
+            for (int i = 0; i < cartasEnMano.size(); i++) {
+                System.out.println((i + 1) + ": " + cartasEnMano.get(i).toString());
             }
-
-            System.out.println("Elige una carta a jugar de la mesa (1, 2, 3, ...):");
+            System.out.println("Elige una carta a jugar de tu mano: (1, 2, 3):");
             while (!sc.hasNextInt()) {
                 System.out.println("Por favor, ingresa un número válido.");
                 sc.next();
@@ -216,10 +216,10 @@ public class VistaConsola implements Ivista{
 
             int opcion = sc.nextInt();
 
-            if (opcion < 1 || opcion > cartasEnMesa.size()) {
+            if (opcion < 1 || opcion > cartasEnMano.size()) {
                 System.out.println("Opción no válida. Por favor, elige una opción dentro del rango válido.");
             } else {
-                return cartasEnMesa.get(opcion - 1);
+                return cartasEnMano.get(opcion - 1);
             }
 
         } while (true);
@@ -231,10 +231,13 @@ public class VistaConsola implements Ivista{
         if (cartas.isEmpty()) {
             System.out.println("No hay cartas en la mesa.");
         } else {
-            System.out.println("\nCartas en mesa:");
+            System.out.println("\n-----------------------------------------------------------");
+            System.out.println("Cartas en mesa:");
             for (int i = 0; i < cartas.size(); i++) {
                 System.out.println("" + cartas.get(i).toString());
             }
+            System.out.println("-----------------------------------------------------------");
+
         }
     }
 
@@ -245,12 +248,15 @@ public class VistaConsola implements Ivista{
             System.out.println("No hay cartas que tenga el jugador en mano");
         }
         else {
-            System.out.println("\nCarta del jugador: " + jugador.getNombreJugador() + "\n");
+            System.out.println("\n-----------------------------------------------------------");
+            System.out.println("Carta del jugador: " + jugador.getNombreJugador() + "\n");
             for (Carta carta : jugador.getCartasEnMano()) {
 
                 System.out.println("" + i + carta.toString());
                 i++;
             }
+            System.out.println("-----------------------------------------------------------");
+
         }
     }
 
@@ -258,6 +264,7 @@ public class VistaConsola implements Ivista{
 
     public void presionarEnter(){
         System.out.println("Presiona Enter para continuar..");
+        sc.nextLine();
         sc.nextLine();
     }
 

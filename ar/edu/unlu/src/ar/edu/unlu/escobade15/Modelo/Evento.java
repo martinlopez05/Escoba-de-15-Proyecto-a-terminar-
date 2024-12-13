@@ -26,6 +26,14 @@ public enum Evento {
 
     PARTIDA_INICIADA,
 
+    SUMAN_15,
+
+    NO_SUMAN_15,
+
+    SUMAN_15_CON_TODAS,
+
+    JUGADOR_SUMA_PUNTO
+
 
 
 
