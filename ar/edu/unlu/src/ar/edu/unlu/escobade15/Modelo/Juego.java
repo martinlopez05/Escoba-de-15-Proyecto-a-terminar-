@@ -44,7 +44,7 @@ public class Juego implements Observable {
 
 
 
-    // metodo para repartir cartas a cada jugador y a la mesa
+    // metodo para repartir cartas a cada jugador
     public void repartirMano() {
 
         for (Jugador jugador : jugadores){
@@ -57,16 +57,20 @@ public class Juego implements Observable {
                 }
             }
         }
-        if (mesajuego.mesaVacia()) {
-            for (int i = 0; i < 4; i++) {
-                if (!barajaEsVacia()) {
-                    mesajuego.agregarCarta(baraja.sacarCarta());
-                } else {
-                    break;
-                }
+
+        notificar(Evento.REPARTIR_CARTAS);
+    }
+
+    //metodo para repartir cartas en mesa
+    public void repartirMesa(){
+        for(int i=0; i<4 ; i++){
+            if(!barajaEsVacia()){
+                mesajuego.agregarCarta(baraja.sacarCarta());
+            }
+            else{
+                break;
             }
         }
-        notificar(Evento.REPARTIR_CARTAS);
     }
 
 
@@ -82,6 +86,7 @@ public class Juego implements Observable {
             baraja.mezclarCartas();
             notificar(Evento.PARTIDA_INICIADA);
             repartirMano();
+            repartirMesa();
             sortearTurno();
         }
     }
@@ -302,11 +307,12 @@ public class Juego implements Observable {
 
     //metodo donde se realiza el manejo de las cartas si hay escoba de mano
     public void hacerEscobaDeMano(){
-        for(Carta carta : cartasMesa()){
+        List<Carta> cartasEnMesa = new ArrayList<>(cartasMesa());
+        for(Carta carta : cartasEnMesa){
             mesajuego.sacarCarta(carta);
             jugadorActual.agregarCartaMasoRonda(carta);
-            sumarpunto(1);
         }
+        sumarpunto(1);
 
     }
 
@@ -318,15 +324,15 @@ public class Juego implements Observable {
 
 
 
-    //metodo para sumar puntos al final de la partida
+    //metodo para sumar puntos al final de la Ronda
     public void sumarPuntoalFinal(){
-        notificar(Evento.FIN_PARTIDA);
+        notificar(Evento.FIN_DE_RONDA);
         Jugador jmaxCartas = jugadores.get(0);
         Jugador jmaxoro = jugadores.get(0);
         Jugador jmaxsiete = jugadores.get(0);
         for(Jugador jugador : jugadores){
             if(jugador.getMasoRonda().todoslosOros()){
-                jugador.sumarpunto(2);
+                sumarpunto(2);
             }
             if(jugador.getMasoRonda().cantoros()>jmaxoro.getMasoRonda().cantoros()){
                 jmaxoro=jugador;
@@ -337,10 +343,10 @@ public class Juego implements Observable {
 
             }
             if(jugador.getMasoRonda().los4sieste()){
-                jugador.sumarpunto(1);
+                sumarpunto(1);
             }
             if(jugador.getMasoRonda().tiene7oro()){
-                jugador.sumarpunto(1);
+                sumarpunto(1);
             }
             if(jugador.getMasoRonda().cantSiestes()> jmaxsiete.getMasoRonda().cantSiestes()){
                 jmaxsiete=jugador;
@@ -359,7 +365,6 @@ public class Juego implements Observable {
 
     @Override
     public void agregarObservador(Observer observador) {
-
         listaObservadores.add(observador);
     }
 

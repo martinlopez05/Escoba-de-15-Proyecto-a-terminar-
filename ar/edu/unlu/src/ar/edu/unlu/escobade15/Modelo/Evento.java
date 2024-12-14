@@ -6,7 +6,7 @@ public enum Evento {
     
     TURNO_JUGADOR,
 
-    FIN_PARTIDA,
+    FIN_DE_RONDA,
 
     CAMBIO_DE_TURNO,
 

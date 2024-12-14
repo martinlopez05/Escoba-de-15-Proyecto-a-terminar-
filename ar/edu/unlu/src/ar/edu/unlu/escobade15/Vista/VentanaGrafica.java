@@ -136,14 +136,21 @@ public class VentanaGrafica implements Ivista{
     }
 
     @Override
-    public void mostrarGanador(Jugador jugador) {
+    public void mostrarMasoRonda(Jugador jugador) {
 
     }
 
     @Override
-    public void mostrarPuntosjugador(List<Jugador> jugadores) {
+    public void mostrarPuntosJugadores(List<Jugador> jugadores) {
 
     }
+
+    @Override
+    public void mostrarGanador(Jugador jugador) {
+
+    }
+
+
 
 
 

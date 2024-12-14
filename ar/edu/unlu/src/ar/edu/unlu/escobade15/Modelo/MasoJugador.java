@@ -7,6 +7,10 @@ public class MasoJugador {
     private List<Carta> cartas;
 
 
+    public List<Carta> getCartas() {
+        return cartas;
+    }
+
     public MasoJugador(){
         cartas = new ArrayList<>();
 
@@ -24,7 +28,7 @@ public class MasoJugador {
 
     public int cantSiestes(){
         int cont = 0;
-        for(Carta carta : cartas){
+        for(Carta carta : this.cartas){
             if(carta.getNumero()==7){
                 cont++;
             }
@@ -35,7 +39,7 @@ public class MasoJugador {
 
     public int cantCartas(){
         int cont = 0;
-        for(Carta carta : cartas){
+        for(Carta carta : this.cartas){
             cont++;
         }
 
@@ -45,7 +49,7 @@ public class MasoJugador {
     public boolean los4sieste(){
         int cont= 0;
         List<Carta> cartas = new ArrayList<>();
-        for(Carta carta : cartas){
+        for(Carta carta : this.cartas){
             if(carta.getNumero()==7){
                 cartas.add(carta);
             }
@@ -73,7 +77,7 @@ public class MasoJugador {
 
     public int cantoros(){
         int cont = 0;
-        for(Carta carta : cartas){
+        for(Carta carta : this.cartas){
             if(carta.getPalo() == Palo.ORO){
                 cont++;
             }
@@ -83,7 +87,7 @@ public class MasoJugador {
 
     public boolean todoslosOros(){
         int cont =0 ;
-        for(Carta carta : cartas){
+        for(Carta carta : this.cartas){
             if(carta.getPalo()==Palo.ORO){
                 if(carta.getNumero() == 1){
                     cont++;
@@ -124,7 +128,7 @@ public class MasoJugador {
     }
 
     public boolean tiene7oro(){
-        for(Carta carta : cartas){
+        for(Carta carta : this.cartas){
             if(carta.getNumero()==7 && carta.getPalo()==Palo.ORO){
                 return true;
             }

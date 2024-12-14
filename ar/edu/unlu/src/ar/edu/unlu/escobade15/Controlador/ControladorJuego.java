@@ -36,6 +36,9 @@ public class ControladorJuego implements Observer {
         return modelo.getMesajuego();
     }
 
+    public List<Jugador> getJugadores(){
+        return modelo.getJugadores();
+    }
 
 
     public void repartirCartas(){
@@ -54,10 +57,30 @@ public class ControladorJuego implements Observer {
         vista.mostrarTurno();
         vista.mostrarMesa(getMesaActual().getCartasMesa());
         vista.mostrarCartajugador(getJugadorActual());
-        vista.opcionJugador();
-        actualizarTurno();
+
+
+        if(modelo.sepuedeEscobadeMano()) {
+            modelo.hacerEscobaDeMano();
+            actualizarTurno();
+        }
+        else{
+            vista.opcionJugador();
+            actualizarTurno();
+        }
 
     }
+
+
+    public void terminarRonda(){
+        modelo.sumarPuntoalFinal();
+        for(Jugador jugador : getJugadores()){
+            vista.mostrarMasoRonda(jugador);
+        }
+        vista.mostrarPuntosJugadores(getJugadores());
+    }
+
+
+
 
 
 
@@ -98,8 +121,8 @@ public class ControladorJuego implements Observer {
             vista.mostrarMensaje("Jugador agregado correctamente ");
 
         }
-        if(dato == Evento.FIN_PARTIDA){
-            vista.mostrarMensaje("Fin de la partida...");
+        if(dato == Evento.FIN_DE_RONDA){
+            vista.mostrarMensaje("Fin de la Ronda...");
             vista.mostrarMensaje("***Recuento de puntos***");
 
 
@@ -134,7 +157,7 @@ public class ControladorJuego implements Observer {
         }
 
         if(dato == Evento.HAY_ESCOBA_DE_MANO){
-            vista.mostrarMensaje("Felicitaciones hay escoba de mano!");
+            vista.mostrarMensaje("HAY ESCOBA DE MANO ... ¡Felicitaciones!");
 
         }
 
@@ -150,11 +173,11 @@ public class ControladorJuego implements Observer {
         }
 
         if(dato == Evento.SUMAN_15_CON_TODAS){
-            vista.mostrarMensaje("Su carta suma 15 con TODAS  de la mesa... ¡Felicitaciones!");
+            vista.mostrarMensaje("HAY ESCOBA ... ¡Felicitaciones!");
         }
 
         if(dato == Evento.JUGADOR_SUMA_PUNTO){
-            System.out.println("¡El Jugador " + getJugadorActual().getNombreJugador() + "suma punto!");
+            System.out.println("¡El Jugador " + getJugadorActual().getNombreJugador() + " suma punto!");
         }
 
 

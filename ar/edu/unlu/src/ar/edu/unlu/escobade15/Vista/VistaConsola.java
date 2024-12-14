@@ -74,8 +74,13 @@ public class VistaConsola implements Ivista{
                                 controlador.comenzarAjugar();
                                 if(controlador.jugadoresSinCartas()){
                                     controlador.repartirCartas();
+
                                 }
+
                             }
+                            controlador.terminarRonda();
+                            controlador.comenzarAjugar();
+                            //falta metodo inicarnuevaRonda
                         }
                         break;
                     }
@@ -109,19 +114,6 @@ public class VistaConsola implements Ivista{
         System.out.println("El ganador de la escoba de 15 es : " + jugador.getNombreJugador() +  "con  " + jugador.getPuntuacion() + "puntos");
 
     }
-
-
-
-
-    public void mostrarPuntosjugador(List<Jugador> jugadores){
-        System.out.println("***Puntos obtenidos de cada jugador:");
-        for(Jugador jugador : jugadores){
-            System.out.println("Jugador  " + jugador.getNombreJugador() + " finalizo con " + jugador.getPuntuacion() + " puntos\n");
-        }
-
-
-    }
-
 
 
     public Carta solicitarCartaaBajar(List<Carta> cartasEnMano) {
@@ -261,18 +253,27 @@ public class VistaConsola implements Ivista{
     }
 
 
+    public void mostrarPuntosJugadores(List<Jugador> jugadores){
+        System.out.println("####### PUNTOS DE JUGADORES #######");
+        for(Jugador jugador : jugadores){
+            System.out.println("Puntos del jugador " + jugador.getNombreJugador() + ": " + jugador.getPuntuacion());
+        }
+    }
+
+    public void mostrarMasoRonda(Jugador jugador){
+        System.out.println("####### CARTAS EN EL MASO JUGADOR " + jugador.getNombreJugador() + "#######");
+        for(Carta carta : jugador.getMasoRonda().getCartas()){
+            System.out.println(carta.toString());
+        }
+    }
+
+
 
     public void presionarEnter(){
         System.out.println("Presiona Enter para continuar..");
         sc.nextLine();
         sc.nextLine();
     }
-
-
-
-    
-
-
 
 
 

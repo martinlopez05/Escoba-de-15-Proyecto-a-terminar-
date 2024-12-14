@@ -16,8 +16,7 @@ public interface Ivista {
     public Carta solicitarCartaaBajar(List<Carta> cartas);
     public void mostrarCartajugador(Jugador jugadorActual);
     public void opcionJugador();
-
-    void mostrarGanador(Jugador jugador);
-
-    void mostrarPuntosjugador(List<Jugador> jugadores);
+    public void mostrarMasoRonda(Jugador jugador);
+    public void mostrarPuntosJugadores(List<Jugador> jugadores);
+    public void mostrarGanador(Jugador jugador);
 }
