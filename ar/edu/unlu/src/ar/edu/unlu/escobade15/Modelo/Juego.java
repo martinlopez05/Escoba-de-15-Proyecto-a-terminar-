@@ -451,10 +451,6 @@ public class Juego implements Observable {
     }
 
 
-
-
-
-
     @Override
     public void agregarObservador(Observer observador) {
         listaObservadores.add(observador);

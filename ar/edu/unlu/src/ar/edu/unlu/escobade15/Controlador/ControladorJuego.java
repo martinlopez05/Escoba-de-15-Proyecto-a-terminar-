@@ -113,6 +113,7 @@ public class ControladorJuego implements Observer {
 
     public void SeleccionarCartaAjugar(Carta carta){
         modelo.seleccionarCartaJugar(carta);
+
     }
 
 
@@ -196,6 +197,7 @@ public class ControladorJuego implements Observer {
         }
         if(dato == Evento.NO_SUMAN_15){
             vista.mostrarMensaje("Su carta no suma 15 con ninguna/s de la mesa...");
+            vista.opcionJugador();
         }
 
         if(dato == Evento.SUMAN_15_CON_TODAS){
