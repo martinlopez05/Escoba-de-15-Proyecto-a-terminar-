@@ -32,7 +32,11 @@ public enum Evento {
 
     SUMAN_15_CON_TODAS,
 
-    JUGADOR_SUMA_PUNTO
+    RONDA_NUEVA_INICIADA,
+
+    JUGADOR_SUMA_PUNTO,
+
+    PARTIDA_FINALIZADA,
 
 
 

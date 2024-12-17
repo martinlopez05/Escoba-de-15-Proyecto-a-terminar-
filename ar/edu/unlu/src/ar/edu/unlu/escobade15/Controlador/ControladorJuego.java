@@ -57,8 +57,6 @@ public class ControladorJuego implements Observer {
         vista.mostrarTurno();
         vista.mostrarMesa(getMesaActual().getCartasMesa());
         vista.mostrarCartajugador(getJugadorActual());
-
-
         if(modelo.sepuedeEscobadeMano()) {
             modelo.hacerEscobaDeMano();
             actualizarTurno();
@@ -72,16 +70,44 @@ public class ControladorJuego implements Observer {
 
 
     public void terminarRonda(){
-        modelo.sumarPuntoalFinal();
+        modelo.terminarRonda();
         for(Jugador jugador : getJugadores()){
             vista.mostrarMasoRonda(jugador);
         }
         vista.mostrarPuntosJugadores(getJugadores());
+        modelo.iniciarNuevaRonda();
+
     }
 
 
+    public boolean rondaTerminada() {
+        return modelo.rondaTerminada();
+    }
 
+    public boolean partidaTerminada(){
+        return modelo.partidaTerminada();
+    }
 
+    public void jugarPartida(){
+        if (obtenerCantidadJugadores() < 2) {
+            vista.mostrarMensaje("¡FALTAN JUGADORES! ---- mínimo de jugadores (2) ---- máximo de jugadores (4)");
+        } else {
+            iniciarPartida();
+            while (!partidaTerminada()) {
+
+                while (!rondaTerminada()) {
+                    comenzarAjugar();
+                    if (jugadoresSinCartas()) {
+                        repartirCartas();
+                    }
+                }
+               terminarRonda();
+            }
+            vista.mostrarMensaje("GANADOR EL JUGADOR " + modelo.obtenerGanador().getNombreJugador());
+            modelo.terminarPartida();
+
+        }
+    }
 
 
 
@@ -178,6 +204,14 @@ public class ControladorJuego implements Observer {
 
         if(dato == Evento.JUGADOR_SUMA_PUNTO){
             System.out.println("¡El Jugador " + getJugadorActual().getNombreJugador() + " suma punto!");
+        }
+
+        if(dato == Evento.RONDA_NUEVA_INICIADA){
+            vista.mostrarMensaje("\n####### NUEVA RONDA INICIADA #######");
+        }
+
+        if(dato == Evento.PARTIDA_FINALIZADA){
+            vista.mostrarMensaje("\n####### PARTIDA FINALIZADA #######");
         }
 
 

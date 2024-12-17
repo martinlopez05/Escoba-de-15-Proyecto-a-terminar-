@@ -38,40 +38,17 @@ public class MasoJugador {
     }
 
     public int cantCartas(){
-        int cont = 0;
-        for(Carta carta : this.cartas){
-            cont++;
-        }
-
-        return cont;
+        return cartas.size();
     }
 
     public boolean los4sieste(){
-        int cont= 0;
-        List<Carta> cartas = new ArrayList<>();
-        for(Carta carta : this.cartas){
-            if(carta.getNumero()==7){
-                cartas.add(carta);
+        Set<Palo> palosSiete = new HashSet<>();
+        for (Carta carta : this.cartas) {
+            if (carta.getNumero() == 7) {
+                palosSiete.add(carta.getPalo());
             }
         }
-
-        for (Carta carta : cartas){
-            if(carta.getPalo()== Palo.ORO){
-                cont++;
-            }
-            if(carta.getPalo() == Palo.BASTO){
-                cont++;
-            }
-
-            if(carta.getPalo() == Palo.ESPADA){
-                cont++;
-            }
-            if(carta.getPalo() == Palo.COPA){
-                cont++;
-            }
-        }
-
-        return cont==4;
+        return palosSiete.size() == 4;
     }
 
 

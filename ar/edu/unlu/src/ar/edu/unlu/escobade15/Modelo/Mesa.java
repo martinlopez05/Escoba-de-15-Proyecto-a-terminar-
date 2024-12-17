@@ -12,7 +12,9 @@ public class Mesa {
         this.cartasMesa = new ArrayList<>();
     }
 
-
+    public void vaciar(){
+        cartasMesa.clear();
+    }
 
     public void agregarCarta(Carta carta) {
         cartasMesa.add(carta);

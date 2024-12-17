@@ -9,6 +9,8 @@ import java.util.Random;
 
 public class Juego implements Observable {
 
+    public final int puntuacionParaGanar = 4;
+
     private List<Observer> listaObservadores;
     private Baraja baraja;
     private List<Jugador> jugadores;
@@ -95,6 +97,38 @@ public class Juego implements Observable {
     public boolean barajaEsVacia(){
         return baraja.esVacia();
     }
+
+
+    //metodo para iniciar Nueva Ronda
+    public void iniciarNuevaRonda(){
+        for(Jugador jugador: jugadores){
+            jugador.getMasoRonda().vaciarMaso();
+        }
+        mesajuego.vaciar();
+        Baraja baraja = new Baraja();
+        this.baraja = baraja;
+        repartirMesa();
+        repartirMano();
+        this.notificar(Evento.RONDA_NUEVA_INICIADA);
+    }
+
+    public boolean rondaTerminada(){
+        if(barajaEsVacia()){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean partidaTerminada(){
+        for (Jugador jugador : jugadores) {
+            if (jugador.getPuntuacion() >= puntuacionParaGanar) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 
     /*
@@ -203,7 +237,6 @@ public class Juego implements Observable {
 
             if(cartaEnJuegoMesa.size() == mesajuego.getCartasMesa().size()){
                 sumarpunto(1);
-                this.notificar(Evento.JUGADOR_SUMA_PUNTO);
             }
 
             for(Carta carta : cartaEnJuegoMesa){
@@ -274,15 +307,37 @@ public class Juego implements Observable {
 
     //metodo para obtener el ganador de la partida
     public Jugador obtenerGanador() {
-        Jugador ganador = jugadores.get(0);
+        Jugador ganador = null;
 
         for (Jugador jugador : jugadores) {
-            if (jugador.getPuntuacion() > ganador.getPuntuacion()) {
+            if (jugador.getPuntuacion() == puntuacionParaGanar) {
                 ganador = jugador;
             }
         }
-
         return ganador;
+    }
+
+    public void terminarRonda(){
+        List<Carta> cartasEnMesa = new ArrayList<>(cartasMesa());
+        if(!mesajuego.mesaVacia()){
+            for(Carta carta : cartasEnMesa){
+                jugadorActual.agregarCartaMasoRonda(carta);
+                mesajuego.sacarCarta(carta);
+            }
+            for(Jugador jugador: jugadores){
+                for(Carta carta : cartaEnManoJugador()){
+                    jugador.agregarCartaMasoRonda(carta);
+                }
+                jugador.getCartasEnMano().clear();
+            }
+        }
+        sumarPuntoalFinal();
+    }
+
+
+    public void terminarPartida(){
+        jugadores.clear();
+        this.notificar(Evento.PARTIDA_FINALIZADA);
     }
 
 
@@ -325,40 +380,77 @@ public class Juego implements Observable {
 
 
     //metodo para sumar puntos al final de la Ronda
-    public void sumarPuntoalFinal(){
+    public void sumarPuntoalFinal() {
+
         notificar(Evento.FIN_DE_RONDA);
-        Jugador jmaxCartas = jugadores.get(0);
-        Jugador jmaxoro = jugadores.get(0);
-        Jugador jmaxsiete = jugadores.get(0);
-        for(Jugador jugador : jugadores){
-            if(jugador.getMasoRonda().todoslosOros()){
-                sumarpunto(2);
-            }
-            if(jugador.getMasoRonda().cantoros()>jmaxoro.getMasoRonda().cantoros()){
-                jmaxoro=jugador;
-            }
+        List<Jugador> maxCartas = new ArrayList<>();
+        List<Jugador> maxOros = new ArrayList<>();
+        List<Jugador> maxSietes = new ArrayList<>();
 
-            if(jugador.getMasoRonda().cantCartas()>jmaxCartas.getMasoRonda().cantCartas()){
-                jmaxCartas=jugador;
+        int maxCantCartas = 0;
+        int maxCantOros = 0;
+        int maxCantSietes = 0;
 
+        for (Jugador jugador : jugadores) {
+            MasoJugador maso = jugador.getMasoRonda();
+
+
+            if (maso.todoslosOros()) {
+                jugador.sumarpunto(1);
             }
-            if(jugador.getMasoRonda().los4sieste()){
-                sumarpunto(1);
+            if (maso.los4sieste()) {
+                jugador.sumarpunto(1);
             }
-            if(jugador.getMasoRonda().tiene7oro()){
-                sumarpunto(1);
-            }
-            if(jugador.getMasoRonda().cantSiestes()> jmaxsiete.getMasoRonda().cantSiestes()){
-                jmaxsiete=jugador;
+            if (maso.tiene7oro()) {
+                jugador.sumarpunto(1);
             }
 
 
+            int cantOros = maso.cantoros();
+            if (cantOros > maxCantOros) {
+                maxCantOros = cantOros;
+                maxOros.clear();
+                maxOros.add(jugador);
+            } else if (cantOros == maxCantOros) {
+                maxOros.add(jugador);
+            }
+
+
+            int cantCartas = maso.cantCartas();
+            if (cantCartas > maxCantCartas) {
+                maxCantCartas = cantCartas;
+                maxCartas.clear();
+                maxCartas.add(jugador);
+            } else if (cantCartas == maxCantCartas) {
+                maxCartas.add(jugador);
+            }
+
+
+            int cantSietes = maso.cantSiestes();
+            if (cantSietes > maxCantSietes) {
+                maxCantSietes = cantSietes;
+                maxSietes.clear();
+                maxSietes.add(jugador);
+            } else if (cantSietes == maxCantSietes) {
+                maxSietes.add(jugador);
+            }
         }
-        jmaxoro.sumarpunto(1);
-        jmaxsiete.sumarpunto(1);
-        jmaxCartas.sumarpunto(1);
 
+
+        for (Jugador jugador : maxOros) {
+            jugador.sumarpunto(1);
+        }
+
+        for (Jugador jugador : maxCartas) {
+            jugador.sumarpunto(1);
+        }
+
+        for (Jugador jugador : maxSietes) {
+            jugador.sumarpunto(1);
+        }
     }
+
+
 
 
 

@@ -65,23 +65,7 @@ public class VistaConsola implements Ivista{
                         break;
                     }
                     case 2: {
-                        if(controlador.obtenerCantidadJugadores()<2){
-                            mostrarMensaje("¡FALTAN JUGADORES! ---- minimo de jugadores (2) -----máximo de jugadores (4)");
-                        }
-                        else{
-                            controlador.iniciarPartida();
-                            while (!controlador.barajaEsVacia()) {
-                                controlador.comenzarAjugar();
-                                if(controlador.jugadoresSinCartas()){
-                                    controlador.repartirCartas();
-
-                                }
-
-                            }
-                            controlador.terminarRonda();
-                            controlador.comenzarAjugar();
-                            //falta metodo inicarnuevaRonda
-                        }
+                        controlador.jugarPartida();
                         break;
                     }
 
@@ -254,14 +238,14 @@ public class VistaConsola implements Ivista{
 
 
     public void mostrarPuntosJugadores(List<Jugador> jugadores){
-        System.out.println("####### PUNTOS DE JUGADORES #######");
+        System.out.println("\n####### PUNTOS DE JUGADORES #######");
         for(Jugador jugador : jugadores){
             System.out.println("Puntos del jugador " + jugador.getNombreJugador() + ": " + jugador.getPuntuacion());
         }
     }
 
     public void mostrarMasoRonda(Jugador jugador){
-        System.out.println("####### CARTAS EN EL MASO JUGADOR " + jugador.getNombreJugador() + "#######");
+        System.out.println("\n####### CARTAS EN EL MASO JUGADOR " + jugador.getNombreJugador() + " #######");
         for(Carta carta : jugador.getMasoRonda().getCartas()){
             System.out.println(carta.toString());
         }
