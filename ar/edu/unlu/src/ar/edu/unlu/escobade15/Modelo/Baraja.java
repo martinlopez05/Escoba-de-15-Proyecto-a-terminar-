@@ -1,9 +1,10 @@
 package ar.edu.unlu.escobade15.Modelo;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Stack;
 
-public class Baraja {
+public class Baraja implements Serializable {
     private Stack<Carta> Cartas;
 
     public Baraja() {

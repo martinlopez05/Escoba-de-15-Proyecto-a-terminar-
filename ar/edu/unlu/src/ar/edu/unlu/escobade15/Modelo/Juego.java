@@ -2,44 +2,48 @@ package ar.edu.unlu.escobade15.Modelo;
 
 import ar.edu.unlu.escobade15.util.PatronObserver.Observable;
 import ar.edu.unlu.escobade15.util.PatronObserver.Observer;
+import ar.edu.unlu.rmimvc.observer.ObservableRemoto;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Juego implements Observable {
+public class Juego extends ObservableRemoto implements IJuego {
 
     public final int puntuacionParaGanar = 4;
 
-    private List<Observer> listaObservadores;
     private Baraja baraja;
     private List<Jugador> jugadores;
     public Jugador jugadorActual;
     public Mesa mesajuego;
 
 
-    public Juego() {
+    public Juego(){
         this.baraja = new Baraja();
         jugadores = new ArrayList<>();
         this.mesajuego = new Mesa();
-        this.listaObservadores = new ArrayList<>();
     }
 
     //retorna una lista de los jugador en la partida
+    @Override
     public List<Jugador> getJugadores() {
         return jugadores;
     }
 
     //retorna el Jugador Actual -> el que esta en su turno de juego
+    @Override
     public Jugador getJugadorActual() {
         return jugadorActual;
     }
 
 
+    @Override
     public Mesa getMesajuego() {
         return mesajuego;
     }
 
+    @Override
     public Baraja getBaraja() {
         return baraja;
     }
@@ -47,7 +51,8 @@ public class Juego implements Observable {
 
 
     // metodo para repartir cartas a cada jugador
-    public void repartirMano() {
+    @Override
+    public void repartirMano() throws RemoteException {
 
         for (Jugador jugador : jugadores){
             for(int i=0 ; i<3 ; i++){
@@ -60,10 +65,11 @@ public class Juego implements Observable {
             }
         }
 
-        notificar(Evento.REPARTIR_CARTAS);
+        notificarObservadores(Evento.REPARTIR_CARTAS);
     }
 
     //metodo para repartir cartas en mesa
+    @Override
     public void repartirMesa(){
         for(int i=0; i<4 ; i++){
             if(!barajaEsVacia()){
@@ -77,16 +83,18 @@ public class Juego implements Observable {
 
 
     //metodo que retorna true  si los jugadores se quedan sin carta
+    @Override
     public boolean jugadoresSinCartas(){
         return jugadores.stream().allMatch(Jugador::faltanCartasenMano);
     }
 
 
     //metodo para iniciar una partida
-    public void iniciarPartida(){
+    @Override
+    public void iniciarPartida() throws RemoteException {
         if(sePuedeIniciarpartida()) {
             baraja.mezclarCartas();
-            notificar(Evento.PARTIDA_INICIADA);
+            notificarObservadores(Evento.PARTIDA_INICIADA);
             repartirMano();
             repartirMesa();
             sortearTurno();
@@ -94,13 +102,15 @@ public class Juego implements Observable {
     }
 
     //metodo que retorna true si la baraja se queda sin cartas
+    @Override
     public boolean barajaEsVacia(){
         return baraja.esVacia();
     }
 
 
     //metodo para iniciar Nueva Ronda
-    public void iniciarNuevaRonda(){
+    @Override
+    public void iniciarNuevaRonda() throws RemoteException {
         for(Jugador jugador: jugadores){
             jugador.getMasoRonda().vaciarMaso();
         }
@@ -109,9 +119,10 @@ public class Juego implements Observable {
         this.baraja = baraja;
         repartirMesa();
         repartirMano();
-        this.notificar(Evento.RONDA_NUEVA_INICIADA);
+        notificarObservadores(Evento.RONDA_NUEVA_INICIADA);
     }
 
+    @Override
     public boolean rondaTerminada(){
         if(barajaEsVacia()){
             return true;
@@ -119,6 +130,7 @@ public class Juego implements Observable {
         return false;
     }
 
+    @Override
     public boolean partidaTerminada(){
         for (Jugador jugador : jugadores) {
             if (jugador.getPuntuacion() >= puntuacionParaGanar) {
@@ -150,12 +162,13 @@ public class Juego implements Observable {
 
 
     //metodo que retorna si se puede empezar una partida
-    public boolean sePuedeIniciarpartida(){
+    @Override
+    public boolean sePuedeIniciarpartida() throws RemoteException {
         if(jugadores.size() >= 2){
             return true;
         }
         else{
-            notificar(Evento.FALTA_JUGADORES);
+            notificarObservadores(Evento.FALTA_JUGADORES);
             return false;
 
         }
@@ -163,29 +176,32 @@ public class Juego implements Observable {
 
 
     //metodo que cambia al jugadorActual en la partida
-    public void actualizarTurno() {
+    @Override
+    public void actualizarTurno() throws RemoteException {
         int indiceActual = jugadores.indexOf(jugadorActual);
         if (indiceActual != -1) {
             int siguienteIndice = (indiceActual + 1) % jugadores.size();
             jugadorActual = jugadores.get(siguienteIndice);
-            notificar(Evento.CAMBIO_DE_TURNO);
+            notificarObservadores(Evento.CAMBIO_DE_TURNO);
         }
 
     }
 
 
     //metodo donde un jugador baja una carta a la mesa
-    public void jugadorBajaCarta(Carta carta) {
+    @Override
+    public void jugadorBajaCarta(Carta carta) throws RemoteException {
         if (!jugadorActual.getCartasEnMano().isEmpty()) {
             mesajuego.agregarCarta(carta);
             jugadorActual.sacarCartaMano(carta);
         } else {
-            notificar(Evento.JUGADOR_SIN_CARTAS);
+            notificarObservadores(Evento.JUGADOR_SIN_CARTAS);
         }
     }
 
     //metodo para obtener la combinacion de carta/s de la mesa que suman 15 con la carta del jugador
-    public List<Carta> obtenerCombinacion15(Carta cartaJugador, List<Carta> cartasMesa){
+    @Override
+    public List<Carta> obtenerCombinacion15(Carta cartaJugador, List<Carta> cartasMesa) throws RemoteException {
         List<List<Carta>> subconjuntos = generarCombinaciones(cartasMesa);
 
         for(List<Carta> subconjunto : subconjuntos){
@@ -204,7 +220,8 @@ public class Juego implements Observable {
 
 
     //metodo que retorna true si se encuentra alguna combinacion de carta/s de la mesa que suman 15 con la del jugador
-    public boolean suman15(Carta cartaJugador, List<Carta> cartasMesa){
+    @Override
+    public boolean suman15(Carta cartaJugador, List<Carta> cartasMesa) throws RemoteException {
 
         List<List<Carta>> combinacionesPosibles = generarCombinaciones(cartasMesa);
         for(List<Carta> combinacion : combinacionesPosibles){
@@ -214,24 +231,25 @@ public class Juego implements Observable {
             }
             if(suma == 15){
                 if(combinacion.size() == mesajuego.getCartasMesa().size()){
-                    this.notificar(Evento.SUMAN_15_CON_TODAS);
+                    notificarObservadores(Evento.SUMAN_15_CON_TODAS);
                     return true;
                 }
                 else{
-                    this.notificar(Evento.SUMAN_15);
+                    notificarObservadores(Evento.SUMAN_15);
                     return true;
                 }
 
             }
 
         }
-        this.notificar(Evento.NO_SUMAN_15);
+        notificarObservadores(Evento.NO_SUMAN_15);
         return false;
     }
 
 
     //metodo donde el jugador selecciona una carta de su mano y suma 15 con alguna/s de la mesa
-    public void seleccionarCartaJugar(Carta cartaJugador){
+    @Override
+    public void seleccionarCartaJugar(Carta cartaJugador) throws RemoteException {
         if(suman15(cartaJugador,mesajuego.getCartasMesa())){
             List<Carta> cartaEnJuegoMesa = obtenerCombinacion15(cartaJugador,mesajuego.getCartasMesa());
 
@@ -252,50 +270,37 @@ public class Juego implements Observable {
     }
 
 
-    //metodo para generar las combinaciones de las cartas de la mesa y se retorna una lista de esas combinaciones
-    private List<List<Carta>> generarCombinaciones(List<Carta> cartas) {
-        List<List<Carta>> combinacionesPosibles = new ArrayList<>();
-        int n = cartas.size();
-        for (int i = 0; i < (1 << n); i++) {
-            List<Carta> subconjuntoCartas = new ArrayList<>();
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j)) != 0) {
-                    subconjuntoCartas.add(cartas.get(j));
-                }
-            }
-            combinacionesPosibles.add(subconjuntoCartas);
-        }
-        return combinacionesPosibles;
-    }
-
-
     //retorna las cartas de la mesa
+    @Override
     public List<Carta> cartasMesa(){
         return getMesajuego().getCartasMesa();
     }
 
     //retorna las carta en mano del jugador
+    @Override
     public List<Carta> cartaEnManoJugador(){
         return getJugadorActual().getCartasEnMano();
     }
 
 
    //metodo para agregar un jugador dado su nombre
-    public void agregarJugador(String nombre) {
+   @Override
+   public void agregarJugador(String nombre) throws RemoteException {
         if(obtenercantJugadores()>=4){
-            this.notificar(Evento.CAPACIDAD_ALCAZADA_JUGADORES);
+            notificarObservadores(Evento.CAPACIDAD_ALCAZADA_JUGADORES);
         }
         else{
             Jugador jugador = new Jugador(nombre);
             jugadores.add(jugador);
             jugadorActual = jugadores.get(0);
-            this.notificar(Evento.JUGADOR_AGREGADO);
+            notificarObservadores(Evento.JUGADOR_AGREGADO);
         }
 
     }
 
 
     //metodo en el cual se sortea el turno en el inicio de la partida
+    @Override
     public void sortearTurno(){
         if (!jugadores.isEmpty()) {
             Random random = new Random();
@@ -306,6 +311,7 @@ public class Juego implements Observable {
 
 
     //metodo para obtener el ganador de la partida
+    @Override
     public Jugador obtenerGanador() {
         Jugador ganador = null;
 
@@ -317,7 +323,8 @@ public class Juego implements Observable {
         return ganador;
     }
 
-    public void terminarRonda(){
+    @Override
+    public void terminarRonda() throws RemoteException {
         List<Carta> cartasEnMesa = new ArrayList<>(cartasMesa());
         if(!mesajuego.mesaVacia()){
             for(Carta carta : cartasEnMesa){
@@ -335,23 +342,26 @@ public class Juego implements Observable {
     }
 
 
-    public void terminarPartida(){
+    @Override
+    public void terminarPartida() throws RemoteException {
         jugadores.clear();
-        this.notificar(Evento.PARTIDA_FINALIZADA);
+        notificarObservadores(Evento.PARTIDA_FINALIZADA);
     }
 
 
    //metodo para obtener la cantidad de jugadores
-    public int  obtenercantJugadores(){
+   @Override
+   public int  obtenercantJugadores(){
         return jugadores.size();
 
     }
 
 
     //metodo que retorna true si hay escoba de mano (todas las cartas de la mesa suman exactamente 15)
-    public boolean sepuedeEscobadeMano(){
+    @Override
+    public boolean sepuedeEscobadeMano() throws RemoteException {
         if(mesajuego.escobaDeMano()){
-            notificar(Evento.HAY_ESCOBA_DE_MANO);
+            notificarObservadores(Evento.HAY_ESCOBA_DE_MANO);
             return true;
         }
         else {
@@ -361,7 +371,8 @@ public class Juego implements Observable {
     }
 
     //metodo donde se realiza el manejo de las cartas si hay escoba de mano
-    public void hacerEscobaDeMano(){
+    @Override
+    public void hacerEscobaDeMano() throws RemoteException {
         List<Carta> cartasEnMesa = new ArrayList<>(cartasMesa());
         for(Carta carta : cartasEnMesa){
             mesajuego.sacarCarta(carta);
@@ -372,17 +383,19 @@ public class Juego implements Observable {
     }
 
     //metodo en el cual se suma un punto al jugador actual
-    public void sumarpunto(int punto){
+    @Override
+    public void sumarpunto(int punto) throws RemoteException {
         jugadorActual.sumarpunto(1);
-        this.notificar(Evento.JUGADOR_SUMA_PUNTO);
+        notificarObservadores(Evento.JUGADOR_SUMA_PUNTO);
     }
 
 
 
     //metodo para sumar puntos al final de la Ronda
-    public void sumarPuntoalFinal() {
+    @Override
+    public void sumarPuntoalFinal() throws RemoteException {
 
-        notificar(Evento.FIN_DE_RONDA);
+        notificarObservadores(Evento.FIN_DE_RONDA);
         List<Jugador> maxCartas = new ArrayList<>();
         List<Jugador> maxOros = new ArrayList<>();
         List<Jugador> maxSietes = new ArrayList<>();
@@ -451,22 +464,22 @@ public class Juego implements Observable {
     }
 
 
-    @Override
+    /*
     public void agregarObservador(Observer observador) {
         listaObservadores.add(observador);
     }
 
-    @Override
-    public void notificar(Evento o) {
+    /*public void notificar(Evento o) {
         for(Observer observer: listaObservadores){
             observer.update(o);
         }
 
-    }
+    }*/
 
-    @Override
+
+    /*
     public void eliminarObservador(Observer observador) {
         listaObservadores.remove(observador);
 
-    }
+    }*/
 }

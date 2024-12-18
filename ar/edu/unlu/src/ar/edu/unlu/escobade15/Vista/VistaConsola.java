@@ -5,10 +5,11 @@ import ar.edu.unlu.escobade15.Modelo.Carta;
 import ar.edu.unlu.escobade15.Modelo.Jugador;
 
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Scanner;
 
-public class VistaConsola implements Ivista{
+public class VistaConsola implements IVista {
 
     private Scanner sc;
     ControladorJuego controlador;
@@ -35,7 +36,7 @@ public class VistaConsola implements Ivista{
         this.controlador=controlador;
     }
 
-    public void iniciar() {
+    public void iniciar() throws RemoteException {
         int opcion;
         System.out.println("¡BIENVENIDO A ESCOBA DE 15!");
         do {
@@ -140,7 +141,7 @@ public class VistaConsola implements Ivista{
 
 
 
-    public void opcionJugador() {
+    public void opcionJugador() throws RemoteException {
         int opcion;
 
         do {
@@ -172,7 +173,7 @@ public class VistaConsola implements Ivista{
     }
 
 
-    public void mostrarTurno(){
+    public void mostrarTurno() throws RemoteException {
         System.out.println("\nTurno del jugador: " + controlador.getJugadorActual().getNombreJugador());
 
     }

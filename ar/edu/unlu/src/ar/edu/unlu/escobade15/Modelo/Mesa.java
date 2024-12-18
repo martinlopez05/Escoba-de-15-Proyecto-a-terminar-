@@ -1,9 +1,10 @@
 package ar.edu.unlu.escobade15.Modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mesa {
+public class Mesa implements Serializable {
 
 
     private List<Carta> cartasMesa;

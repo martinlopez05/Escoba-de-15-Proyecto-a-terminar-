@@ -1,8 +1,9 @@
 package ar.edu.unlu.escobade15.Modelo;
 
 import javax.swing.*;
+import java.io.Serializable;
 
-public class Carta {
+public class Carta implements Serializable {
     private int numero;
     private Palo palo;
     private int valor;
@@ -12,7 +13,7 @@ public class Carta {
         this.numero = numero;
         this.palo = palo;
         this.valor = valor;
-        this.imagen = new ImageIcon("imagenCarta/" +  palo.name().toLowerCase() + numero + ".jpg");
+        //this.imagen = new ImageIcon("imagenCarta/" +  palo.name().toLowerCase() + numero + ".jpg");
 
     }
 
@@ -33,7 +34,7 @@ public class Carta {
         return "[numero: " + getNumero() + ",palo: " + getPalo() + ",valor: " + getValor() + "]";
     }
 
-    public ImageIcon getImagen() {
+    /*public ImageIcon getImagen() {
         return imagen;
-    }
+    }*/
 }

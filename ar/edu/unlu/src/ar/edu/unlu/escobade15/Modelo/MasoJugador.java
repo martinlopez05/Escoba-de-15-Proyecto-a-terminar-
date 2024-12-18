@@ -1,8 +1,9 @@
 package ar.edu.unlu.escobade15.Modelo;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class MasoJugador {
+public class MasoJugador implements Serializable {
 
     private List<Carta> cartas;
 

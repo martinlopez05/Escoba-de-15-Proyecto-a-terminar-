@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class VentanaGrafica implements Ivista{
+public class VentanaGrafica implements IVista {
 
     ControladorJuego controlador;
     private DialogoNombre dialogoNombre;
@@ -79,8 +79,9 @@ public class VentanaGrafica implements Ivista{
 
     @Override
     public void mostrarTurno() {
-        mostrarMensaje("Turno del jugador : " + controlador.getJugadorActual().getNombreJugador());
+
     }
+
 
     @Override
     public void mostrarMesa(List<Carta> cartasMesa) {

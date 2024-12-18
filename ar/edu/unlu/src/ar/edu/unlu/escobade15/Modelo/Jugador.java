@@ -1,9 +1,10 @@
 package ar.edu.unlu.escobade15.Modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jugador {
+public class Jugador implements Serializable {
     private String nombreJugador;
     private List<Carta> CartasEnMano;
 
