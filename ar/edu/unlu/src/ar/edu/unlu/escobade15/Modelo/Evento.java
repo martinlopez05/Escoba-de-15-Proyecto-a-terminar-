@@ -2,25 +2,13 @@ package ar.edu.unlu.escobade15.Modelo;
 
 public enum Evento {
 
-    JUGADOR_AGREGADO,
-    
-    TURNO_JUGADOR,
-
     FIN_DE_RONDA,
 
     CAMBIO_DE_TURNO,
 
-    REPARTIR_CARTAS,
-
-    HAY_ESCOBA,
+    NO_SUMA_NINGUNA_15,
 
     HAY_ESCOBA_DE_MANO,
-
-    FALTA_JUGADORES,
-
-    JUGADOR_SIN_CARTAS,
-
-    NO_HAY_EN_MESA,
 
     CAPACIDAD_ALCAZADA_JUGADORES,
 
@@ -28,19 +16,15 @@ public enum Evento {
 
     SUMAN_15,
 
-    NO_SUMAN_15,
-
     SUMAN_15_CON_TODAS,
 
     RONDA_NUEVA_INICIADA,
 
-    JUGADOR_SUMA_PUNTO,
-
     PARTIDA_FINALIZADA,
 
+    JUGADOR_AGREGADO,
 
-
-
+    SE_PUEDE_INICIAR,
 
 
 }

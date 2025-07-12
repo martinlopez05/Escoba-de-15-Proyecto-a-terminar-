@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.Stack;
 
 public class Baraja implements Serializable {
-    private Stack<Carta> Cartas;
+    private Stack<Carta> cartas;
 
     public Baraja() {
-        this.Cartas = new Stack<Carta>();
+        this.cartas = new Stack<Carta>();
         crearCartas();
         mezclarCartas();
 
@@ -20,16 +20,16 @@ public class Baraja implements Serializable {
                 if (numero != 8 && numero != 9) {
                     if (numero == 10) {
                         Carta carta = new Carta(numero, palo, 8);
-                        Cartas.push(carta);
+                        cartas.push(carta);
                     } else if (numero == 11) {
                         Carta carta = new Carta(numero, palo, 9);
-                        Cartas.push(carta);
+                        cartas.push(carta);
                     } else if (numero == 12) {
                         Carta carta = new Carta(numero, palo, 10);
-                        Cartas.push(carta);
+                        cartas.push(carta);
                     } else {
                         Carta carta = new Carta(numero, palo, numero);
-                        Cartas.push(carta);
+                        cartas.push(carta);
                     }
                 }
             }
@@ -37,24 +37,25 @@ public class Baraja implements Serializable {
     }
 
 
-
+    public int obtenerCantCartas(){
+        return cartas.size();
+    }
 
     public  Carta sacarCarta() {
-        return Cartas.pop();
+        return cartas.pop();
 
     }
-    
 
 
     public void mezclarCartas() {
-        Collections.shuffle(Cartas);
+        Collections.shuffle(cartas);
 
     }
 
 
 
     public boolean esVacia(){
-        return Cartas.isEmpty();
+        return cartas.isEmpty();
     }
 
 

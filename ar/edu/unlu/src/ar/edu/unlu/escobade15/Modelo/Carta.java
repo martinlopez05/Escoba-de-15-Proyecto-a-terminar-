@@ -2,6 +2,7 @@ package ar.edu.unlu.escobade15.Modelo;
 
 import javax.swing.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Carta implements Serializable {
     private int numero;
@@ -32,6 +33,20 @@ public class Carta implements Serializable {
     public String toString() {
 
         return "[numero: " + getNumero() + ",palo: " + getPalo() + ",valor: " + getValor() + "]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Carta otraCarta = (Carta) obj;
+        return this.numero == otraCarta.numero &&
+                this.palo == otraCarta.palo;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(numero, palo);
     }
 
     /*public ImageIcon getImagen() {

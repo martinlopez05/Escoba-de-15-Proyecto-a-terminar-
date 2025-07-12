@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public class ControladorJuego implements IControladorRemoto {
-    IJuego modelo;
+    IJuego modelo = new Juego();
     IVista vista;
 
 
@@ -19,22 +19,18 @@ public class ControladorJuego implements IControladorRemoto {
 
     }
 
-    public boolean sePuedeIniciar() throws RemoteException {
-        return modelo.sePuedeIniciarpartida();
-    }
 
-    public boolean jugadoresSinCartas() throws RemoteException {
-        return modelo.jugadoresSinCartas();
+    public void reinciarPartida() throws RemoteException {
+        modelo.reiniciarPartida();
     }
-
 
     public Jugador getJugadorActual() throws RemoteException {
         return modelo.getJugadorActual();
 
     }
 
-    public Mesa getMesaActual() throws RemoteException {
-        return modelo.getMesajuego();
+    public List<Carta> getCartasMesa() throws RemoteException {
+        return modelo.getMesajuego().getCartasMesa();
     }
 
     public List<Jugador> getJugadores() throws RemoteException {
@@ -42,18 +38,10 @@ public class ControladorJuego implements IControladorRemoto {
     }
 
 
-    public void repartirCartas(){
-        try{
-            modelo.repartirMano();
-        }
-        catch (RemoteException e){
-            e.printStackTrace();
-        }
+    public String getNombreJugadorAnfitrion() throws RemoteException {
+        return modelo.getNombreJugadorAnfitrion();
     }
 
-    public boolean barajaEsVacia() throws RemoteException {
-        return modelo.barajaEsVacia();
-    }
 
     public void actualizarTurno(){
         try{
@@ -64,85 +52,29 @@ public class ControladorJuego implements IControladorRemoto {
         }
     }
 
-    public void comenzarAjugar() {
-        try {
-            vista.mostrarTurno();
-            vista.mostrarMesa(getMesaActual().getCartasMesa());
-            vista.mostrarCartajugador(getJugadorActual());
-            if (modelo.sepuedeEscobadeMano()) {
-                modelo.hacerEscobaDeMano();
-                actualizarTurno();
-            } else {
-                vista.opcionJugador();
-                actualizarTurno();
-            }
-        }
-        catch (RemoteException e){
-            e.printStackTrace();
-        }
-
+    public int obtenerCantJugadores() throws RemoteException {
+        return modelo.obtenercantJugadores();
     }
 
 
-    public void terminarRonda(){
+    public List<Carta> getCartasEnMano() throws RemoteException {
+        return modelo.getJugadorActual().getCartasEnMano();
+    }
 
+
+    public void iniciarNuevaRonda() throws RemoteException {
+        modelo.iniciarNuevaRonda();
+    }
+
+
+    public String getNombreJugadorAgregado() throws RemoteException {
+        return modelo.getNombreJugadorAgregado();
+    }
+
+
+    public void jugarCarta(Carta carta){
         try{
-            modelo.terminarRonda();
-            for(Jugador jugador : getJugadores()){
-                vista.mostrarMasoRonda(jugador);
-            }
-            vista.mostrarPuntosJugadores(getJugadores());
-            modelo.iniciarNuevaRonda();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-
-    public boolean rondaTerminada() throws RemoteException {
-        return modelo.rondaTerminada();
-    }
-
-    public boolean partidaTerminada() throws RemoteException {
-        return modelo.partidaTerminada();
-    }
-
-
-    public void jugarPartida() throws RemoteException {
-        if (obtenerCantidadJugadores() < 2) {
-            vista.mostrarMensaje("¡FALTAN JUGADORES! ---- mínimo de jugadores (2) ---- máximo de jugadores (4)");
-        } else {
-            iniciarPartida();
-            while (!partidaTerminada()) {
-
-                while (!rondaTerminada()) {
-                    comenzarAjugar();
-                    if (jugadoresSinCartas()) {
-                        repartirCartas();
-                    }
-                }
-               terminarRonda();
-            }
-            vista.mostrarMensaje("GANADOR EL JUGADOR " + modelo.obtenerGanador().getNombreJugador());
-
-            try{
-                modelo.terminarPartida();
-            }
-            catch (RemoteException e){
-                e.printStackTrace();
-            }
-
-
-        }
-    }
-
-
-
-    public void SeleccionarCartaAjugar(Carta carta){
-        try{
-            modelo.seleccionarCartaJugar(carta);
+            modelo.jugarCarta(carta);
         }
         catch (RemoteException e){
             e.printStackTrace();
@@ -178,13 +110,8 @@ public class ControladorJuego implements IControladorRemoto {
         }
     }
 
-
-   public List<Carta> getCartasJugadorActual() throws RemoteException {
-        return modelo.cartaEnManoJugador();
-   }
-
-   public int obtenerCantidadJugadores() throws RemoteException {
-        return modelo.obtenercantJugadores();
+   public String getNombreGanador() throws RemoteException {
+        return modelo.getNombreJugadorGanador();
    }
 
 
@@ -193,78 +120,53 @@ public class ControladorJuego implements IControladorRemoto {
            this.modelo = (IJuego) modeloRemoto;
     }
 
+
+
     @Override
     public void actualizar(IObservableRemoto iObservableRemoto, Object o) throws RemoteException {
-        if(o == Evento.JUGADOR_AGREGADO){
-            vista.mostrarMensaje("Jugador agregado correctamente ");
 
-        }
         if(o == Evento.FIN_DE_RONDA){
-            vista.mostrarMensaje("Fin de la Ronda...");
-            vista.mostrarMensaje("***Recuento de puntos***");
-
-
+            vista.terminarRonda();
         }
+
         if(o== Evento.CAMBIO_DE_TURNO){
-            vista.mostrarMensaje("\nCambiando de turno...");
-        }
-
-        if(o==Evento.REPARTIR_CARTAS){
-            vista.mostrarMensaje("Repartiendo cartas...");
-        }
-
-        if(o==Evento.HAY_ESCOBA){
-            vista.mostrarMensaje("¡Puede hacer escoba!");
-        }
-
-        if(o == Evento.FALTA_JUGADORES){
-            vista.mostrarMensaje("Faltan jugadores...");
-        }
-
-        if(o == Evento.CAPACIDAD_ALCAZADA_JUGADORES){
-            vista.mostrarMensaje("No se pueden agregar mas jugadores");
-        }
-
-
-        if(o == Evento.JUGADOR_SIN_CARTAS){
-            vista.mostrarMensaje("El jugador no tiene mas cartas en mano");
-        }
-
-        if(o == Evento.NO_HAY_EN_MESA){
-            vista.mostrarMensaje("No hay cartas en mesas");
-        }
-
-        if(o == Evento.HAY_ESCOBA_DE_MANO){
-            vista.mostrarMensaje("HAY ESCOBA DE MANO ... ¡Felicitaciones!");
-
-        }
-
-        if(o == Evento.PARTIDA_INICIADA){
-            vista.mostrarMensaje("####### PARTIDA INICIADA #######");
-        }
-
-        if(o == Evento.SUMAN_15){
-            vista.mostrarMensaje("La carta seleccionada suman 15 con carta de la mesa... ¡Felicitaciones!");
-        }
-        if(o == Evento.NO_SUMAN_15){
-            vista.mostrarMensaje("Su carta no suma 15 con ninguna/s de la mesa...");
-            vista.opcionJugador();
-        }
-
-        if(o == Evento.SUMAN_15_CON_TODAS){
-            vista.mostrarMensaje("HAY ESCOBA ... ¡Felicitaciones!");
-        }
-
-        if(o == Evento.JUGADOR_SUMA_PUNTO){
-            vista.mostrarMensaje("¡El Jugador " + getJugadorActual().getNombreJugador() + " suma punto!");
+            vista.comenzarTurnos();
         }
 
         if(o == Evento.RONDA_NUEVA_INICIADA){
-            vista.mostrarMensaje("\n####### NUEVA RONDA INICIADA #######");
+            vista.comenzarTurnos();
+        }
+
+        if(o == Evento.PARTIDA_INICIADA){
+            vista.comenzarTurnos();
+        }
+
+        if(o == Evento.NO_SUMA_NINGUNA_15){
+            vista.mostrarNoSuma15JugadorActual();
+        }
+
+        if(o == Evento.SUMAN_15_CON_TODAS){
+            vista.mostrarHizoEscobaJugadorActual();
         }
 
         if(o == Evento.PARTIDA_FINALIZADA){
-            vista.mostrarMensaje("\n####### PARTIDA FINALIZADA #######");
+            vista.terminarPartida();
+        }
+
+        if(o == Evento.JUGADOR_AGREGADO){
+            vista.jugadorSeUnioApartida();
+        }
+
+        if(o == Evento.SE_PUEDE_INICIAR){
+            vista.habilitarInicioPartida();
+        }
+
+        if(o == Evento.SUMAN_15) {
+            vista.mostrarSuma15JugadorActual();
+        }
+
+        if(o == Evento.CAPACIDAD_ALCAZADA_JUGADORES){
+
         }
     }
 }

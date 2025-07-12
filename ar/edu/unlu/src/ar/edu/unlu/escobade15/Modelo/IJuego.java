@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IJuego extends Serializable, IObservableRemoto {
+    String getNombreJugadorAnfitrion() throws RemoteException;
+
     //retorna una lista de los jugador en la partida
     List<Jugador> getJugadores() throws RemoteException;
 
@@ -17,6 +19,12 @@ public interface IJuego extends Serializable, IObservableRemoto {
     Mesa getMesajuego() throws RemoteException;
 
     Baraja getBaraja() throws RemoteException;
+
+    String getNombreJugadorAgregado() throws RemoteException;
+
+    String getNombreJugadorGanador() throws RemoteException;
+
+    void reiniciarPartida() throws RemoteException;
 
     // metodo para repartir cartas a cada jugador
     void repartirMano() throws RemoteException;
@@ -36,12 +44,10 @@ public interface IJuego extends Serializable, IObservableRemoto {
     //metodo para iniciar Nueva Ronda
     void iniciarNuevaRonda() throws RemoteException;
 
-    boolean rondaTerminada() throws RemoteException;
+    boolean sePuedeIniciarPartida() throws RemoteException;
 
     boolean partidaTerminada() throws RemoteException;
 
-    //metodo que retorna si se puede empezar una partida
-    boolean sePuedeIniciarpartida() throws RemoteException;
 
     //metodo que cambia al jugadorActual en la partida
     void actualizarTurno() throws RemoteException;
@@ -56,7 +62,7 @@ public interface IJuego extends Serializable, IObservableRemoto {
     boolean suman15(Carta cartaJugador, List<Carta> cartasMesa) throws RemoteException;
 
     //metodo donde el jugador selecciona una carta de su mano y suma 15 con alguna/s de la mesa
-    void seleccionarCartaJugar(Carta cartaJugador) throws RemoteException;
+    void jugarCarta(Carta cartaJugador) throws RemoteException;
 
     //metodo para generar las combinaciones de las cartas de la mesa y se retorna una lista de esas combinaciones
     default List<List<Carta>> generarCombinaciones(List<Carta> cartas) throws RemoteException {
@@ -87,7 +93,7 @@ public interface IJuego extends Serializable, IObservableRemoto {
     void sortearTurno() throws RemoteException;
 
     //metodo para obtener el ganador de la partida
-    Jugador obtenerGanador() throws RemoteException;
+    String obtenerGanador() throws RemoteException;
 
     void terminarRonda() throws RemoteException;
 

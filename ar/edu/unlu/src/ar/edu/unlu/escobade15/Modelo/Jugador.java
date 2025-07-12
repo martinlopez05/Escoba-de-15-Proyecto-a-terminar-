@@ -7,7 +7,7 @@ import java.util.List;
 public class Jugador implements Serializable {
     private String nombreJugador;
     private List<Carta> CartasEnMano;
-
+    private int escobas;
     private int puntuacion;
 
     private MasoJugador MasoRonda;
@@ -19,6 +19,17 @@ public class Jugador implements Serializable {
         this.puntuacion = 0;
     }
 
+    public int getEscobas() {
+        return escobas;
+    }
+
+    public void agregarEscoba(){
+        escobas ++;
+    }
+
+    public void vaciarEscobas(){
+        this.escobas = 0;
+    }
 
     public MasoJugador getMasoRonda() {
         return MasoRonda;
@@ -34,9 +45,7 @@ public class Jugador implements Serializable {
     }
 
     public void sacarCartaMano(Carta carta) {
-        
         CartasEnMano.remove(carta);
-        
     }
 
     public void agregarCartaMasoRonda(Carta carta){
