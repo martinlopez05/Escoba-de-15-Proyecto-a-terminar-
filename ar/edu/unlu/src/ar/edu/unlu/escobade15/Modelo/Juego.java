@@ -197,6 +197,23 @@ public class Juego extends ObservableRemoto implements IJuego {
 
     }
 
+    //metodo para generar las combinaciones de las cartas de la mesa y se retorna una lista de esas combinaciones
+    public  List<List<Carta>> generarCombinaciones(List<Carta> cartas) throws RemoteException {
+        List<List<Carta>> combinacionesPosibles = new ArrayList<>();
+        int n = cartas.size();
+        for (int i = 0; i < (1 << n); i++) {
+            List<Carta> subconjuntoCartas = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                if ((i & (1 << j)) != 0) {
+                    subconjuntoCartas.add(cartas.get(j));
+                }
+            }
+            combinacionesPosibles.add(subconjuntoCartas);
+        }
+        return combinacionesPosibles;
+    }
+
+
 
     //metodo para obtener la combinacion de carta/s de la mesa que suman 15 con la carta del jugador actual
     @Override

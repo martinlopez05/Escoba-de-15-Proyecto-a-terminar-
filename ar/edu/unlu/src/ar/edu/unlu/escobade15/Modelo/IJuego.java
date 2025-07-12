@@ -65,20 +65,7 @@ public interface IJuego extends Serializable, IObservableRemoto {
     void jugarCarta(Carta cartaJugador) throws RemoteException;
 
     //metodo para generar las combinaciones de las cartas de la mesa y se retorna una lista de esas combinaciones
-    default List<List<Carta>> generarCombinaciones(List<Carta> cartas) throws RemoteException {
-        List<List<Carta>> combinacionesPosibles = new ArrayList<>();
-        int n = cartas.size();
-        for (int i = 0; i < (1 << n); i++) {
-            List<Carta> subconjuntoCartas = new ArrayList<>();
-            for (int j = 0; j < n; j++) {
-                if ((i & (1 << j)) != 0) {
-                    subconjuntoCartas.add(cartas.get(j));
-                }
-            }
-            combinacionesPosibles.add(subconjuntoCartas);
-        }
-        return combinacionesPosibles;
-    }
+    public List<List<Carta>> generarCombinaciones(List<Carta> cartas) throws RemoteException;
 
     //retorna las cartas de la mesa
     List<Carta> cartasMesa() throws RemoteException;
